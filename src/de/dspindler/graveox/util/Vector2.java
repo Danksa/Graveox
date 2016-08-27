@@ -119,6 +119,13 @@ public class Vector2
 		return this;
 	}
 	
+	public Vector2 zero()
+	{
+		this.x = 0.0d;
+		this.y = 0.0d;
+		return this;
+	}
+	
 	public Vector2 clone()
 	{
 		return new Vector2(x, y);
