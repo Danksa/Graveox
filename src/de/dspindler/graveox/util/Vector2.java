@@ -126,6 +126,16 @@ public class Vector2
 		return this;
 	}
 	
+	public Vector2 getLeftNormal()
+	{
+		return new Vector2(y, -x);
+	}
+	
+	public Vector2 getRightNormal()
+	{
+		return new Vector2(-y, x);
+	}
+	
 	public Vector2 clone()
 	{
 		return new Vector2(x, y);
