@@ -74,6 +74,25 @@ public abstract class RigidBody
 		this.netTorque += force * point.getMagnitude();
 	}
 	
+	public Vector2 toLocalSpace(Vector2 p)
+	{
+		Vector2 t = new Vector2();
+		Vector2 p2 = p.clone();
+		p2.subtract(position);
+		t.x = p2.x * Math.cos(angle) - p2.y * Math.sin(angle);
+		t.y = p2.x * Math.sin(angle) + p2.y * Math.cos(angle);
+		return t;
+	}
+	
+	public Vector2 toWorldSpace(Vector2 p)
+	{
+		Vector2 t = new Vector2();
+		t.x = p.x * Math.cos(angle) - p.y * Math.sin(angle);
+		t.y = p.x * Math.sin(angle) + p.y * Math.cos(angle);
+		t.add(position);
+		return t;
+	}
+	
 	public void preUpdate(double deltaTime)
 	{
 		// Calculate new values for linear components using Verlet integration

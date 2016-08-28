@@ -33,6 +33,9 @@ public class Star extends RigidBody
 	{
 		g.setFill(Color.ORANGE);
 		g.fillOval(position.x - radius, position.y - radius, radius * 2.0d, radius * 2.0d);
+		
+		g.setStroke(Color.WHITE);
+		g.strokeLine(position.x, position.y, position.x + Math.cos(angle) * radius, position.y + Math.sin(angle) * radius);
 	}
 	
 	public void setRadius(double radius)
