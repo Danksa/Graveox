@@ -47,7 +47,7 @@ public class Trail
 			{
 				points.add(parent.getPosition().clone());
 				
-				if(length > 0 && points.size() >= length)
+				if(length > 0 && points.size() > length)
 				{
 					points.remove(0);
 				}
