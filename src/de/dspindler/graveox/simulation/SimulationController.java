@@ -6,6 +6,9 @@ import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Star;
 import de.dspindler.graveox.simulation.physics.Trail;
 import de.dspindler.graveox.ui.Grid;
+import de.dspindler.graveox.ui.tools.AddTool;
+import de.dspindler.graveox.ui.tools.EditTool;
+import de.dspindler.graveox.ui.tools.Tool;
 import de.dspindler.graveox.util.Vector2;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,14 +31,26 @@ public class SimulationController
 		this.handler = new SimulationHandler();
 		
 		// Attach event listeners
-		view.getCanvas().setOnMouseClicked(handler.new MouseClicked());
-		view.getCanvas().setOnMousePressed(handler.new MousePressed());
-		view.getCanvas().setOnMouseReleased(handler.new MouseReleased());
-		view.getCanvas().setOnMouseDragged(handler.new MouseDragged());
-		view.getCanvas().setOnMouseMoved(handler.new MouseMoved());
-		view.getCanvas().setOnKeyPressed(handler.new KeyPressed());
-		view.getCanvas().setOnKeyReleased(handler.new KeyReleased());
-		view.getCanvas().setOnKeyTyped(handler.new KeyTyped());
+		this.view.getCanvas().setOnMouseClicked(handler.new MouseClicked());
+		this.view.getCanvas().setOnMousePressed(handler.new MousePressed());
+		this.view.getCanvas().setOnMouseReleased(handler.new MouseReleased());
+		this.view.getCanvas().setOnMouseDragged(handler.new MouseDragged());
+		this.view.getCanvas().setOnMouseMoved(handler.new MouseMoved());
+		this.view.getCanvas().setOnKeyPressed(handler.new KeyPressed());
+		this.view.getCanvas().setOnKeyReleased(handler.new KeyReleased());
+		this.view.getCanvas().setOnKeyTyped(handler.new KeyTyped());
+		
+		// Initialize tools
+		this.data.initTools(new Tool[]{
+				new EditTool(this),
+				new AddTool(this)
+		});
+		
+		// Enable first tool
+		this.data.getTools()[0].setEnabled(true);
+		
+		// Add event listeners from the tools
+		this.handler.addListeners(data.getTools());
 		
 		// Initialize camera
 		data.getCamera().setSpaceWidth(view.getCanvas().getWidth());
@@ -73,6 +88,11 @@ public class SimulationController
 	public SimulationView getView()
 	{
 		return view;
+	}
+	
+	public SimulationData getData()
+	{
+		return data;
 	}
 	
 	public void setWidth(double width)
@@ -149,6 +169,16 @@ public class SimulationController
 			
 			// Update camera
 			data.getCamera().update(deltaTime);
+			
+			// Update tool
+			for(Tool t : data.getTools())
+			{
+				if(t.isEnabled())
+				{
+					t.update(deltaTime);
+					break;
+				}
+			}
 		}
 		
 		private void render(GraphicsContext g)
@@ -175,6 +205,16 @@ public class SimulationController
 			
 			// Restore transform from camera
 			g.restore();
+			
+			// Render tool
+			for(Tool t : data.getTools())
+			{
+				if(t.isEnabled())
+				{
+					t.render(g);
+					break;
+				}
+			}
 			
 			g.setFill(Color.WHITE);
 			// Draw some text here

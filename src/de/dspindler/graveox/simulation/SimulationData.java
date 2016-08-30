@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import de.dspindler.graveox.simulation.physics.Camera;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Trail;
+import de.dspindler.graveox.ui.tools.Tool;
 
 public class SimulationData
 {
@@ -18,15 +19,28 @@ public class SimulationData
 	private int								simulationSteps;
 	private double							time;
 	
+	// Tools
+	private Tool[]							tools;
+	
 	public SimulationData()
 	{
 		bodies = new ArrayList<RigidBody>();
 		trails = new ArrayList<Trail>();
 		camera = new Camera();
 		
-		timeScale = 1.0d;
+		timeScale = 0.2d;
 		simulationSteps = 1;
 		time = 0.0d;
+	}
+	
+	public void initTools(Tool[] tools)
+	{
+		this.tools = tools;
+	}
+	
+	public Tool[] getTools()
+	{
+		return tools;
 	}
 	
 	public void advanceTime(double deltaTime)

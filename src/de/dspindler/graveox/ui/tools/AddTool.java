@@ -1,14 +1,15 @@
 package de.dspindler.graveox.ui.tools;
 
+import de.dspindler.graveox.simulation.SimulationController;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class AddTool extends Tool
 {
-	public AddTool()
+	public AddTool(SimulationController simulation)
 	{
-		super("Add", "Use to add new bodies to the simulation.");
+		super("Add", "Use to add new bodies to the simulation.", simulation);
 	}
 
 	@Override
