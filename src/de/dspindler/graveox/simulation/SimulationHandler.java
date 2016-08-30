@@ -20,6 +20,14 @@ public class SimulationHandler
 		this.listeners.add(listener);
 	}
 	
+	public void addListeners(EventListener[] listeners)
+	{
+		for(EventListener l : listeners)
+		{
+			this.addListener(l);
+		}
+	}
+	
 	public void removeListener(EventListener listener)
 	{
 		this.listeners.remove(listener);
@@ -32,7 +40,10 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				l.onMouseClicked(e);
+				if(l.isEnabled())
+				{
+					l.onMouseClicked(e);
+				}
 			}
 		}
 	}
@@ -44,7 +55,10 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				l.onMousePressed(e);
+				if(l.isEnabled())
+				{
+					l.onMousePressed(e);
+				}
 			}
 		}	
 	}
@@ -56,7 +70,10 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				l.onMouseReleased(e);
+				if(l.isEnabled())
+				{
+					l.onMouseReleased(e);
+				}
 			}
 		}	
 	}
@@ -68,7 +85,10 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				l.onMouseDragged(e);
+				if(l.isEnabled())
+				{
+					l.onMouseDragged(e);
+				}
 			}
 		}
 	}
@@ -80,7 +100,10 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				l.onMouseMoved(e);
+				if(l.isEnabled())
+				{
+					l.onMouseMoved(e);
+				}
 			}
 		}	
 	}
@@ -92,7 +115,10 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				l.onKeyPressed(e);
+				if(l.isEnabled())
+				{
+					l.onKeyPressed(e);
+				}
 			}
 		}	
 	}
@@ -104,7 +130,10 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				l.onKeyReleased(e);
+				if(l.isEnabled())
+				{
+					l.onKeyReleased(e);
+				}
 			}
 		}	
 	}
@@ -116,7 +145,10 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				l.onKeyTyped(e);
+				if(l.isEnabled())
+				{
+					l.onKeyTyped(e);
+				}
 			}
 		}	
 	}
