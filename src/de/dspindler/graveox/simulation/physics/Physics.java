@@ -5,7 +5,7 @@ import de.dspindler.graveox.util.Vector2;
 public class Physics
 {
 	public static final double			GRAVITATIONAL_CONSTANT = 1.0d;
-	public static final double			LIGHT_SPEED = 10000.0d;
+	public static final double			LIGHT_SPEED = 1000.0d;
 	public static final double			LIGHT_SPEED_SQUARED = LIGHT_SPEED * LIGHT_SPEED;
 	
 	public static void applyNewtonianGravity(RigidBody a, RigidBody b)
@@ -54,7 +54,7 @@ public class Physics
 			impulse.invert();
 			a.applyForce(impulse);
 			
-			if(a instanceof Star && b instanceof Star)
+			/*if(a instanceof Star && b instanceof Star)
 			{
 				// Correct position
 				double radiusA = ((Star) a).getRadius();
@@ -66,7 +66,7 @@ public class Physics
 				
 				a.setPosition(posa);
 				b.setPosition(posb);
-			}
+			}*/
 		}
 	}
 }
