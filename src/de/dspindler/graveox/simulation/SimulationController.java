@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 
 public class SimulationController
 {
+	// Simulation parts
 	private SimulationData			data;
 	private SimulationView			view;
 	private SimulationTimer			timer;
@@ -20,6 +21,7 @@ public class SimulationController
 	
 	public SimulationController(SimulationData data)
 	{
+		// Initialize parts
 		this.data = data;
 		this.view = new SimulationView();
 		this.timer = new SimulationTimer();
@@ -34,6 +36,10 @@ public class SimulationController
 		view.getCanvas().setOnKeyPressed(handler.new KeyPressed());
 		view.getCanvas().setOnKeyReleased(handler.new KeyReleased());
 		view.getCanvas().setOnKeyTyped(handler.new KeyTyped());
+		
+		// Initialize camera
+		data.getCamera().setSpaceWidth(view.getCanvas().getWidth());
+		data.getCamera().setSpaceHeight(view.getCanvas().getHeight() - 36.0d); // Subtracting 36 because of the toolbar height
 		
 		// Test bodies
 		data.addBody(new Star());
@@ -52,8 +58,16 @@ public class SimulationController
 		((Star) data.getBodies().get(1)).setVelocity(new Vector2(0.0d, 0.0d));
 		data.addTrail(new Trail(data.getBodies().get(1)));
 		
+		// Track first body
+		data.getCamera().setTrackedBody(data.getBodies().get(0));
+		
 		// Start simulation
 		this.timer.start();
+	}
+	
+	public SimulationHandler getEventHandler()
+	{
+		return handler;
 	}
 	
 	public SimulationView getView()
@@ -61,41 +75,23 @@ public class SimulationController
 		return view;
 	}
 	
+	public void setWidth(double width)
+	{
+		data.getCamera().setSpaceWidth(width);
+	}
+	
+	public void setHeight(double height)
+	{
+		data.getCamera().setSpaceHeight(height);
+	}
+	
 	private class SimulationTimer extends AnimationTimer
 	{
-		// Timer attributes
-		private double				timeScale;
-		private double				time;
-		private int					epoch;
-		private int					simulationSteps;
 		private double				deltaTime;
-		
-		// Testing some things
-		private double				prevDir;
-		private Vector2				apoapsis;
-		private Vector2				periapsis;
-		private boolean[]			quarter = new boolean[]{false, false, false, false, false};
-		private int					cycles = 0;
-		
-		// Another test!
-		private Grid				grid;
-		private Grid				grid2;
-		private Camera				camera = new Camera(new Vector2(512.0d, 384.0d));
 		
 		public SimulationTimer()
 		{
-			this.timeScale = 0.1d;
-			this.time = 0.0d;
-			this.epoch = 0;
-			this.simulationSteps = 80;
-			this.deltaTime = 0.0d;
 			
-			prevDir = 0.0d;
-			apoapsis = new Vector2();
-			periapsis = new Vector2();
-			
-			grid = new Grid(new Vector2(), 200.0d, 6, 6);
-			grid2 = new Grid(new Vector2(), 200.0d, 6, 6);
 		}
 		
 		private void update(double deltaTime, double time)
@@ -125,6 +121,7 @@ public class SimulationController
 				}
 			}
 			
+			// Do collision things!
 			RigidBody b1, b2;
 			for(int i = 0; i < data.getBodyCount(); ++i)
 			{
@@ -150,17 +147,8 @@ public class SimulationController
 				b.update(deltaTime, time);
 			}
 			
-			// TEST
-			grid.setCenter(data.getBodies().get(0).getPosition());
-			grid2.setCenter(data.getBodies().get(1).getPosition());
-			
-			if(camera.getTrackedBody() == null && data.getBodyCount() > 0)
-			{
-//				camera.setTrackedBody(data.getBodies().get(0));
-			}
-			
-//			camera.scale(1.0d / 1.00001d);
-			camera.update(deltaTime);
+			// Update camera
+			data.getCamera().update(deltaTime);
 		}
 		
 		private void render(GraphicsContext g)
@@ -169,12 +157,9 @@ public class SimulationController
 			g.setFill(Color.BLACK);
 			g.fillRect(0, 0, view.getCanvas().getWidth(), view.getCanvas().getHeight());
 			
+			// Apply camera transformation
 			g.save();
-			camera.applyTransform(g);
-			
-			// TEST
-//			grid.render(g);
-			grid2.render(g);
+			data.getCamera().applyTransform(g);
 			
 			// Draw trails
 			for(Trail t : data.getTrails())
@@ -188,128 +173,26 @@ public class SimulationController
 				b.render(g);
 			}
 			
-			// Test
-			RigidBody a = data.getBodies().get(0);
-			RigidBody b = data.getBodies().get(1);
-			
-			Vector2 axis = b.getPosition().clone().subtract(a.getPosition());
-			axis = axis.getLeftNormal();
-			axis.scale(100.0d / axis.getMagnitude());
-			
-			Vector2 vel = b.getVelocity().clone().subtract(a.getVelocity());
-			vel.scale(-100.0d / vel.getMagnitude());
-			
-			Vector2 diff = vel.clone().subtract(axis);
-			Vector2 normal = axis.getLeftNormal().normalize();
-			
-			g.setStroke(Color.WHITE);
-			g.strokeLine(a.getPosition().x + axis.x, a.getPosition().y + axis.y, a.getPosition().x, a.getPosition().y);
-			
-			g.setStroke(Color.GREEN);
-			g.strokeLine(a.getPosition().x + vel.x, a.getPosition().y + vel.y, a.getPosition().x, a.getPosition().y);
-			
-			g.setStroke(Color.AQUAMARINE);
-			g.strokeLine(a.getPosition().x + axis.x + diff.x, a.getPosition().y + axis.y + diff.y, a.getPosition().x + axis.x, a.getPosition().y + axis.y);
-			
-			double dir = diff.dot(normal);
-			
-			if(prevDir >= 0.0d && dir < 0.0d)
-			{
-				apoapsis.set(a.getPosition());
-			}
-			else if(prevDir <= 0.0d && dir > 0.0d)
-			{
-				periapsis.set(a.getPosition());
-			}
-			
-			// Test
-			prevDir = dir;
-			double ang = Vector2.getAngle(new Vector2(512, 384), a.getPosition());
-			if(ang >= 0.0d && ang < Math.PI * 0.5d)
-			{
-				quarter[0] = true;
-//				System.out.println("1");
-			}
-			if(ang >= Math.PI * 0.5d && ang < Math.PI)
-			{
-				quarter[1] = true;
-//				System.out.println("2");
-			}
-			if(ang >= -Math.PI && ang < -Math.PI * 0.5d)
-			{
-				quarter[2] = true;
-//				System.out.println("3");
-			}
-			if(ang >= -Math.PI * 0.5d && ang < 0.0d)
-			{
-				quarter[3] = true;
-//				System.out.println("4");
-			}
-			
-			if(quarter[0] && quarter[1] && quarter[2] && quarter[3])
-			{
-				if(quarter[0] && quarter[4])
-				{
-					quarter[0] = false;
-					quarter[1] = false;
-					quarter[2] = false;
-					quarter[3] = false;
-					quarter[4] = false;
-					
-					++cycles;
-				}
-				else if(quarter[0] && !quarter[4])
-				{
-					if(ang >= 0.0d && ang < Math.PI * 0.5d)
-					{
-						quarter[4] = true;
-//						System.out.println("1");
-					}
-				}
-			}
-			
-			g.setStroke(Color.ORANGE);
-			g.strokeLine(b.getPosition().x, b.getPosition().y, apoapsis.x, apoapsis.y);
-			
-			g.setStroke(Color.AQUAMARINE);
-			g.strokeLine(b.getPosition().x, b.getPosition().y, periapsis.x, periapsis.y);
-			
-			// Restore camera transform
+			// Restore transform from camera
 			g.restore();
 			
 			g.setFill(Color.WHITE);
-			
-			g.fillText("Dir: " + dir, 2, 40);
-			
-			g.fillText("Vel: " + data.getBodies().get(0).getVelocity().getMagnitude(), 2, 10);
-			double gamma = 1.0d / Math.sqrt(1.0d - data.getBodies().get(0).getVelocity().getMagnitudeSquared() / Physics.LIGHT_SPEED_SQUARED);
-			g.fillText("L-Factor: " + gamma, 2, 20);
-			g.fillText("Cycles: " + cycles, 2, 50);
-			
-			Vector2 pos = new Vector2(512.0d - 100.0d, 384.0d);
-			g.fillText("Local: " + pos + ", World: " + camera.toWorldSpace(pos), 2, 100);
-			
-			g.setFill(Color.WHITE);
-			g.fillRect(512 - 2, 384 - 2, 4, 4);
-			
-			pos.set(500.0d, 0.0d);
-			pos.set(camera.toCameraSpace(pos));
-			g.setFill(Color.AQUAMARINE);
-			g.fillRect(pos.x - 2, pos.y - 2, 4, 4);
+			// Draw some text here
+			g.fillText(String.format("World Time: %.2fs", data.getTime()), 2, 10);
 		}
 		
 		@Override
 		public void handle(long now)
 		{
-			deltaTime = timeScale / (60.0d * simulationSteps);
+			deltaTime = data.getTimeScale() / (60.0d * data.getSimulationStepCount());
 			
-			for(int i = 0; i < simulationSteps; ++i)
+			for(int i = 0; i < data.getSimulationStepCount(); ++i)
 			{
-				update(deltaTime, time);
+				update(deltaTime, data.getTime());
 			}
 			render(view.getContext());
 			
-			time = epoch * deltaTime;
+			data.advanceTime(deltaTime);
 		}	
 	}
 }

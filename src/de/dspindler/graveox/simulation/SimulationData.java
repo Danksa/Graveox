@@ -2,18 +2,71 @@ package de.dspindler.graveox.simulation;
 
 import java.util.ArrayList;
 
+import de.dspindler.graveox.simulation.physics.Camera;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Trail;
 
 public class SimulationData
 {
+	// Objects
 	private ArrayList<RigidBody>			bodies;
 	private ArrayList<Trail>				trails;
+	private Camera							camera;
+	
+	// Simulation parameters
+	private double							timeScale;
+	private int								simulationSteps;
+	private double							time;
 	
 	public SimulationData()
 	{
 		bodies = new ArrayList<RigidBody>();
 		trails = new ArrayList<Trail>();
+		camera = new Camera();
+		
+		timeScale = 1.0d;
+		simulationSteps = 1;
+		time = 0.0d;
+	}
+	
+	public void advanceTime(double deltaTime)
+	{
+		this.time += deltaTime;
+	}
+	
+	public void setTime(double time)
+	{
+		this.time = time;
+	}
+	
+	public double getTime()
+	{
+		return time;
+	}
+	
+	public void setSimulationStepCount(int count)
+	{
+		this.simulationSteps = count;
+	}
+	
+	public int getSimulationStepCount()
+	{
+		return simulationSteps;
+	}
+	
+	public void setTimeScale(double scale)
+	{
+		this.timeScale = scale;
+	}
+	
+	public double getTimeScale()
+	{
+		return timeScale;
+	}
+	
+	public Camera getCamera()
+	{
+		return camera;
 	}
 	
 	public ArrayList<RigidBody> getBodies()

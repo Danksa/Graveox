@@ -2,8 +2,12 @@ package de.dspindler.graveox.ui;
 
 import de.dspindler.graveox.simulation.SimulationController;
 import de.dspindler.graveox.simulation.SimulationData;
+import de.dspindler.graveox.ui.tools.AddTool;
+import de.dspindler.graveox.ui.tools.EditTool;
+import de.dspindler.graveox.ui.tools.Tool;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Toggle;
 
 public class WindowController
 {
@@ -20,13 +24,32 @@ public class WindowController
 		this.data = data;
 		this.view = new WindowView();
 		
+		// Initialize tools
+		this.data.setTools(new Tool[]{
+				new EditTool(),
+				new AddTool()
+		});
+		this.view.initToolbar(data.getTools());
+		
+		// Disable all tools
+		for(Tool t : data.getTools())
+		{
+			t.setEnabled(false);
+		}
+		
+		// Enable first tool
+		data.getTools()[0].setEnabled(true);
+		
 		// Attach event handlers
 		this.view.getScene().widthProperty().addListener(new WidthListener());
 		this.view.getScene().heightProperty().addListener(new HeightListener());
 		
+		this.view.getButtonGroup().selectedToggleProperty().addListener(new ToolbarListener());
+		
 		// Initialize simulation
 		this.simulation = new SimulationController(new SimulationData());
 		this.view.setSimulationView(simulation.getView());
+		this.simulation.getEventHandler().addListeners(data.getTools());
 	}
 	
 	public void show()
@@ -40,6 +63,7 @@ public class WindowController
 		public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth)
 		{
 			view.getSimulationView().getCanvas().setWidth(newSceneWidth.doubleValue());
+			simulation.setWidth(newSceneWidth.doubleValue());
 		}
 	}
 	
@@ -49,6 +73,31 @@ public class WindowController
 		public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight)
 		{
 			view.getSimulationView().getCanvas().setHeight(newSceneHeight.doubleValue());
+			
+			// Subtract toolbar height from scene height and send it to the simulation
+			simulation.setHeight(newSceneHeight.doubleValue() - view.getToolbar().getHeight());
+		}
+	}
+	
+	private class ToolbarListener implements ChangeListener<Toggle>
+	{
+		@Override
+		public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle newToggle)
+		{
+			if(newToggle != null)
+			{
+				Tool selected = (Tool) view.getButtonGroup().getSelectedToggle().getUserData();
+				
+				// Disable all tools
+				for(Tool t : data.getTools())
+				{
+					t.setEnabled(false);
+				}
+				// Enable selected tool
+				selected.setEnabled(true);
+				
+				System.out.println("The tool \"" + selected.getName() + "\" was selected!");
+			}
 		}
 	}
 }
