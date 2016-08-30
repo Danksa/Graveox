@@ -1,11 +1,8 @@
 package de.dspindler.graveox.ui;
 
 import de.dspindler.graveox.simulation.SimulationView;
-import de.dspindler.graveox.ui.tools.AddTool;
-import de.dspindler.graveox.ui.tools.EditTool;
 import de.dspindler.graveox.ui.tools.Tool;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;

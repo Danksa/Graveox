@@ -2,8 +2,6 @@ package de.dspindler.graveox.ui;
 
 import de.dspindler.graveox.simulation.SimulationController;
 import de.dspindler.graveox.simulation.SimulationData;
-import de.dspindler.graveox.ui.tools.AddTool;
-import de.dspindler.graveox.ui.tools.EditTool;
 import de.dspindler.graveox.ui.tools.Tool;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -24,32 +22,21 @@ public class WindowController
 		this.data = data;
 		this.view = new WindowView();
 		
+		// Initialize simulation
+		this.simulation = new SimulationController(new SimulationData());
+		
 		// Initialize tools
-		this.data.setTools(new Tool[]{
-				new EditTool(),
-				new AddTool()
-		});
-		this.view.initToolbar(data.getTools());
+		this.view.initToolbar(simulation.getData().getTools());
 		
-		// Disable all tools
-		for(Tool t : data.getTools())
-		{
-			t.setEnabled(false);
-		}
-		
-		// Enable first tool
-		data.getTools()[0].setEnabled(true);
+		// Show simulation
+		this.view.setSimulationView(simulation.getView());
 		
 		// Attach event handlers
 		this.view.getScene().widthProperty().addListener(new WidthListener());
 		this.view.getScene().heightProperty().addListener(new HeightListener());
 		
+		// Set toolbar event listener
 		this.view.getButtonGroup().selectedToggleProperty().addListener(new ToolbarListener());
-		
-		// Initialize simulation
-		this.simulation = new SimulationController(new SimulationData());
-		this.view.setSimulationView(simulation.getView());
-		this.simulation.getEventHandler().addListeners(data.getTools());
 	}
 	
 	public void show()
@@ -89,7 +76,7 @@ public class WindowController
 				Tool selected = (Tool) view.getButtonGroup().getSelectedToggle().getUserData();
 				
 				// Disable all tools
-				for(Tool t : data.getTools())
+				for(Tool t : simulation.getData().getTools())
 				{
 					t.setEnabled(false);
 				}
