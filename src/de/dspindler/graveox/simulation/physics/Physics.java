@@ -10,16 +10,31 @@ public class Physics
 	
 	public static void applyNewtonianGravity(RigidBody a, RigidBody b)
 	{
-		Vector2 relPos = b.getPosition().clone().subtract(a.getPosition());
+		Vector2 force = getNewtonianGravity(a, b);
 		
+		a.applyForce(force);
+		force.invert();
+		b.applyForce(force);
+	}
+	
+	public static Vector2 getNewtonianGravity(RigidBody a, RigidBody b)
+	{
+		Vector2 relPos = b.getPosition().clone().subtract(a.getPosition());
 		relPos.scale(GRAVITATIONAL_CONSTANT * a.getMass() * b.getMass() / (relPos.getMagnitudeSquared() * relPos.getMagnitude()));
 		
-		a.applyForce(relPos);
-		relPos.invert();
-		b.applyForce(relPos);
+		return relPos;
 	}
 	
 	public static void applyRelativisticGravity(RigidBody a, RigidBody b)
+	{
+		Vector2 force = getRelativisticGravity(a, b);
+		
+		a.applyForce(force);
+		force.invert();
+		b.applyForce(force);
+	}
+	
+	public static Vector2 getRelativisticGravity(RigidBody a, RigidBody b)
 	{
 		Vector2 relPos = b.getPosition().clone().subtract(a.getPosition());
 		Vector2 relVel = b.getVelocity().clone().subtract(a.getVelocity());
@@ -33,9 +48,7 @@ public class Physics
 		
 		relPos.scale(force / relPos.getMagnitude());
 		
-		a.applyForce(relPos);
-		relPos.invert();
-		b.applyForce(relPos);
+		return relPos;
 	}
 	
 	public static void applyCollisionImpulse(RigidBody a, RigidBody b, double deltaTime)

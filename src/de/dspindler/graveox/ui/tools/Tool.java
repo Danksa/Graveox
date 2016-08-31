@@ -39,7 +39,7 @@ public abstract class Tool extends EventListener
 	
 	protected void drawLengthScale(GraphicsContext g)
 	{
-		double scale = simulation.getData().getCamera().getScale();
+		double scale = simulation.getData().getCamera().getSmoothedScale();
 		
 		// Padding from right and bottom edge
 		double padding = 20.0d;

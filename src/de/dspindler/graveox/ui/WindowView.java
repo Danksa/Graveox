@@ -3,6 +3,7 @@ package de.dspindler.graveox.ui;
 import de.dspindler.graveox.simulation.SimulationView;
 import de.dspindler.graveox.ui.tools.Tool;
 import javafx.scene.Scene;
+import javafx.scene.control.Separator;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
@@ -53,9 +54,6 @@ public class WindowView
 			toolButtons[i].setUserData(tools[i]);
 			toolButtons[i].setTooltip(new Tooltip(tools[i].getTooltip()));
 			
-			// Attach tool's eventlistener
-			
-			
 			// Select first button
 			if(i == 0)
 			{
@@ -65,6 +63,7 @@ public class WindowView
 		
 		// Initialize toolbar
 		toolbar = new ToolBar(toolButtons);
+		toolbar.getItems().add(new Separator());
 		
 		// Place toolbar in top pane of the mainPane
 		mainPane.setTop(toolbar);
