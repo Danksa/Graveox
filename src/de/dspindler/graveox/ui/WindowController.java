@@ -75,13 +75,8 @@ public class WindowController
 			{
 				Tool selected = (Tool) view.getButtonGroup().getSelectedToggle().getUserData();
 				
-				// Disable all tools
-				for(Tool t : simulation.getData().getTools())
-				{
-					t.setEnabled(false);
-				}
-				// Enable selected tool
-				selected.setEnabled(true);
+				// Select new tool
+				simulation.getData().selectTool(selected);
 				
 				System.out.println("The tool \"" + selected.getName() + "\" was selected!");
 			}

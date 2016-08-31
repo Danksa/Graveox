@@ -2,6 +2,7 @@ package de.dspindler.graveox.simulation;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 
 public abstract class EventListener
 {
@@ -28,6 +29,8 @@ public abstract class EventListener
 	
 	public abstract void onMouseMoved(MouseEvent e);
 	public abstract void onMouseDragged(MouseEvent e);
+	
+	public abstract void onMouseScrolled(ScrollEvent e);
 	
 	public abstract void onKeyPressed(KeyEvent e);
 	public abstract void onKeyReleased(KeyEvent e);

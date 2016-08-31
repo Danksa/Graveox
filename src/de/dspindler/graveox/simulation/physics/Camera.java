@@ -94,6 +94,11 @@ public class Camera
 		this.spaceSize.y = height * 0.5d;
 	}
 	
+	public Vector2 getSpaceSize()
+	{
+		return spaceSize;
+	}
+	
 	public Vector2 toWorldSpace(Vector2 point)
 	{
 		return point.clone().translate(-spaceSize.x, -spaceSize.y).scale(1.0d / scale).translate(position.x, position.y);

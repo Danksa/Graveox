@@ -4,6 +4,7 @@ import de.dspindler.graveox.simulation.SimulationController;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 
 public class AddTool extends Tool
 {
@@ -43,6 +44,14 @@ public class AddTool extends Tool
 	}
 
 	@Override
+	public void onMouseScrolled(ScrollEvent e)
+	{
+		double scroll = Math.exp(e.getDeltaY() * 0.001d);
+		
+		super.zoom(scroll);
+	}
+	
+	@Override
 	public void onKeyPressed(KeyEvent e)
 	{
 		
@@ -67,7 +76,14 @@ public class AddTool extends Tool
 	}
 
 	@Override
-	public void render(GraphicsContext g)
+	public void renderForeground(GraphicsContext g)
+	{
+		// Draw length scale
+		super.drawLengthScale(g);
+	}
+	
+	@Override
+	public void renderBackground(GraphicsContext g)
 	{
 		
 	}

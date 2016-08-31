@@ -37,6 +37,11 @@ public class Trail
 		this.parent = body;
 	}
 	
+	public boolean isAttachedTo(RigidBody body)
+	{
+		return parent == body;
+	}
+	
 	public void update(double deltaTime)
 	{
 		if(parent != null)
@@ -57,16 +62,16 @@ public class Trail
 	
 	public void render(GraphicsContext g)
 	{
-		g.setFill(Color.WHITE);
-		g.fillText("Length: " + points.size(), position.x + 5, position.y - 7);
+//		g.setFill(Color.WHITE);
+//		g.fillText("Length: " + points.size(), position.x + 5, position.y - 7);
 		
+		// Draw trail
 		g.setStroke(Color.GREEN);
 		for(int i = 0; i < points.size() - 1; ++i)
 		{
 			g.strokeLine(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
 		}
 		
-//		g.setStroke(Color.BLUE);
 		g.strokeLine(position.x, position.y, points.get(points.size() - 1).x, points.get(points.size() - 1).y);
 	}
 }

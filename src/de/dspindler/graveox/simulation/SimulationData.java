@@ -21,6 +21,7 @@ public class SimulationData
 	
 	// Tools
 	private Tool[]							tools;
+	private Tool							selectedTool;
 	
 	public SimulationData()
 	{
@@ -36,11 +37,28 @@ public class SimulationData
 	public void initTools(Tool[] tools)
 	{
 		this.tools = tools;
+		this.selectedTool = tools[0];
+		
+		// Enable listener for first tool
+		this.selectedTool.setEnabled(true);
 	}
 	
 	public Tool[] getTools()
 	{
 		return tools;
+	}
+	
+	public void selectTool(Tool t)
+	{
+		this.selectedTool.setEnabled(false);
+		
+		this.selectedTool = t;
+		this.selectedTool.setEnabled(true);
+	}
+	
+	public Tool getSelectedTool()
+	{
+		return selectedTool;
 	}
 	
 	public void advanceTime(double deltaTime)
@@ -100,6 +118,16 @@ public class SimulationData
 	
 	public void removeBody(RigidBody b)
 	{
+		// Remove trail
+		for(int i = 0; i < trails.size(); ++i)
+		{
+			if(trails.get(i).isAttachedTo(b))
+			{
+				trails.remove(i);
+				break;
+			}
+		}
+		
 		bodies.remove(b);
 	}
 	

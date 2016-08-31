@@ -1,11 +1,9 @@
 package de.dspindler.graveox.simulation;
 
-import de.dspindler.graveox.simulation.physics.Camera;
 import de.dspindler.graveox.simulation.physics.Physics;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Star;
 import de.dspindler.graveox.simulation.physics.Trail;
-import de.dspindler.graveox.ui.Grid;
 import de.dspindler.graveox.ui.tools.AddTool;
 import de.dspindler.graveox.ui.tools.EditTool;
 import de.dspindler.graveox.ui.tools.Tool;
@@ -36,6 +34,7 @@ public class SimulationController
 		this.view.getCanvas().setOnMouseReleased(handler.new MouseReleased());
 		this.view.getCanvas().setOnMouseDragged(handler.new MouseDragged());
 		this.view.getCanvas().setOnMouseMoved(handler.new MouseMoved());
+		this.view.getCanvas().setOnScroll(handler.new MouseScrolled());
 		this.view.getCanvas().setOnKeyPressed(handler.new KeyPressed());
 		this.view.getCanvas().setOnKeyReleased(handler.new KeyReleased());
 		this.view.getCanvas().setOnKeyTyped(handler.new KeyTyped());
@@ -45,9 +44,6 @@ public class SimulationController
 				new EditTool(this),
 				new AddTool(this)
 		});
-		
-		// Enable first tool
-		this.data.getTools()[0].setEnabled(true);
 		
 		// Add event listeners from the tools
 		this.handler.addListeners(data.getTools());
@@ -171,14 +167,7 @@ public class SimulationController
 			data.getCamera().update(deltaTime);
 			
 			// Update tool
-			for(Tool t : data.getTools())
-			{
-				if(t.isEnabled())
-				{
-					t.update(deltaTime);
-					break;
-				}
-			}
+			data.getSelectedTool().update(deltaTime);
 		}
 		
 		private void render(GraphicsContext g)
@@ -186,6 +175,9 @@ public class SimulationController
 			// Clear canvas
 			g.setFill(Color.BLACK);
 			g.fillRect(0, 0, view.getCanvas().getWidth(), view.getCanvas().getHeight());
+			
+			// Render tool background
+			data.getSelectedTool().renderBackground(g);
 			
 			// Apply camera transformation
 			g.save();
@@ -206,15 +198,8 @@ public class SimulationController
 			// Restore transform from camera
 			g.restore();
 			
-			// Render tool
-			for(Tool t : data.getTools())
-			{
-				if(t.isEnabled())
-				{
-					t.render(g);
-					break;
-				}
-			}
+			// Render tool foreground
+			data.getSelectedTool().renderForeground(g);
 			
 			g.setFill(Color.WHITE);
 			// Draw some text here
