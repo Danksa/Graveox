@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 
 public class SimulationHandler
 {
@@ -103,6 +104,21 @@ public class SimulationHandler
 				if(l.isEnabled())
 				{
 					l.onMouseMoved(e);
+				}
+			}
+		}	
+	}
+	
+	public class MouseScrolled implements EventHandler<ScrollEvent>
+	{
+		@Override
+		public void handle(ScrollEvent e)
+		{
+			for(EventListener l : listeners)
+			{
+				if(l.isEnabled())
+				{
+					l.onMouseScrolled(e);
 				}
 			}
 		}	
