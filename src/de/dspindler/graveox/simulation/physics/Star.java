@@ -39,18 +39,22 @@ public class Star extends RigidBody
 		
 		// Schwarzschild radius draw test
 		double r = 2.0d * Physics.GRAVITATIONAL_CONSTANT * mass / Physics.LIGHT_SPEED_SQUARED;
-		double ang;
-		int steps = 32;
-		double step = 2.0d * Math.PI / steps;
 		
-		for(int i = 0; i < steps; ++i)
+		if(r > radius)
 		{
-			ang = step * i;
-			g.setStroke(Color.WHITE);
-			g.strokeLine(position.x + Math.cos(ang) * r, position.y + Math.sin(ang) * r, position.x + Math.cos(ang + step) * r, position.y + Math.sin(ang + step) * r);
+			double ang;
+			int steps = 32;
+			double step = 2.0d * Math.PI / steps;
 			
-			g.setStroke(Color.RED);
-			g.strokeLine(position.x + Math.cos(ang) * r * 1.5d, position.y + Math.sin(ang) * r * 1.5d, position.x + Math.cos(ang + step) * r * 1.5d, position.y + Math.sin(ang + step) * r * 1.5d);
+			for(int i = 0; i < steps; ++i)
+			{
+				ang = step * i;
+				g.setStroke(Color.WHITE);
+				g.strokeLine(position.x + Math.cos(ang) * r, position.y + Math.sin(ang) * r, position.x + Math.cos(ang + step) * r, position.y + Math.sin(ang + step) * r);
+				
+				g.setStroke(Color.RED);
+				g.strokeLine(position.x + Math.cos(ang) * r * 1.5d, position.y + Math.sin(ang) * r * 1.5d, position.x + Math.cos(ang + step) * r * 1.5d, position.y + Math.sin(ang + step) * r * 1.5d);
+			}
 		}
 	}
 	

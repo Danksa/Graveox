@@ -29,7 +29,7 @@ public class SimulationData
 		trails = new ArrayList<Trail>();
 		camera = new Camera();
 		
-		timeScale = 0.2d;
+		timeScale = 1.0d;
 		simulationSteps = 1;
 		time = 0.0d;
 	}
