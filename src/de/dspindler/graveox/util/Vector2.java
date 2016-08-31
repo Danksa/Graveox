@@ -176,9 +176,4 @@ public class Vector2
 	{
 		return a.clone().scale(a.dot(b) / a.getMagnitudeSquared());
 	}
-	
-	public static Vector2 getPolar(double magnitude, double direction)
-	{
-		return new Vector2(Math.cos(direction) * magnitude, Math.sin(direction) * magnitude);
-	}
 }

@@ -36,6 +36,8 @@ public class EditTool extends Tool
 		Vector2 pos = new Vector2(e.getX(), e.getY());
 		pos.set(simulation.getData().getCamera().toWorldSpace(pos));
 		
+		RigidBody oldBody = selectedBody;
+		
 		// Check if a body was clicked
 		for(RigidBody b : simulation.getData().getBodies())
 		{
@@ -47,9 +49,12 @@ public class EditTool extends Tool
 				{
 					selectedBody = b;
 					
-					// Center camera on body
-					simulation.getData().getCamera().setTrackedBody(selectedBody);
-					simulation.getData().getCamera().setPositionSmoothingFactor(1.0d);	// Disable camera smoothing while tracking body
+					// Check for double click on one body
+//					if(selectedBody == oldBody)
+					{
+						// Center camera on body
+						simulation.getData().getCamera().setTrackedBody(selectedBody);
+					}
 					
 					break;
 				}
@@ -61,7 +66,6 @@ public class EditTool extends Tool
 		{
 			dragStartPosition.set(e.getX(), e.getY());
 			simulation.getData().getCamera().setTrackedBody(null);
-			simulation.getData().getCamera().setPositionSmoothingFactor(0.1d);	// Enable camera smoothing while dragging the view
 			dragging = true;
 		}
 	}

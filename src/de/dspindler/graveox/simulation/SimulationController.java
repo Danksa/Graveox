@@ -54,33 +54,23 @@ public class SimulationController
 		
 		// Test bodies
 		data.addBody(new Star());
-		((Star) data.getBodies().get(0)).setRadius(10.0d);
-		((Star) data.getBodies().get(0)).setMass(6000000.0d);
-		((Star) data.getBodies().get(0)).applyTorque(0.0d);
-		((Star) data.getBodies().get(0)).setPosition(new Vector2(212.0d  + 200.0d, 384.0d - 0));
-		((Star) data.getBodies().get(0)).setVelocity(new Vector2(0.0d, 0.0d));
-		data.addTrail(new Trail(data.getBodies().get(0)));
-		
-		/*data.addBody(new Star());
 		((Star) data.getBodies().get(0)).setRadius(5.0d);
 		((Star) data.getBodies().get(0)).setMass(20.0d);
 		((Star) data.getBodies().get(0)).applyTorque(0.0d);
 		((Star) data.getBodies().get(0)).setPosition(new Vector2(212.0d + 280.0d, 384.0d - 0));
 		((Star) data.getBodies().get(0)).setVelocity(new Vector2(0.0d, 538.598d));
-		data.addTrail(new Trail(data.getBodies().get(0), 200));*/
+		data.addTrail(new Trail(data.getBodies().get(0), 200));
 		
-		/*data.addBody(new Star());
+		data.addBody(new Star());
 		((Star) data.getBodies().get(1)).setRadius(10.0d);
 		((Star) data.getBodies().get(1)).setMass(6000000.0d);
 		((Star) data.getBodies().get(1)).applyTorque(0.0d);
 		((Star) data.getBodies().get(1)).setPosition(new Vector2(212.0d  + 200.0d, 384.0d - 0));
 		((Star) data.getBodies().get(1)).setVelocity(new Vector2(0.0d, 0.0d));
-		data.addTrail(new Trail(data.getBodies().get(1)));*/
+		data.addTrail(new Trail(data.getBodies().get(1)));
 		
-		// Position camera
-		data.getCamera().setPosition(new Vector2(512.0d, 384.0d));
-//		 Track first body
-//		data.getCamera().setTrackedBody(data.getBodies().get(0));
+		// Track first body
+		data.getCamera().setTrackedBody(data.getBodies().get(0));
 		
 		// Start simulation
 		this.timer.start();
@@ -161,8 +151,7 @@ public class SimulationController
 					{
 						if(Vector2.getDistance(b1.getPosition(), b2.getPosition()) <= ((Star) b1).getRadius() + ((Star) b2).getRadius())
 						{
-							// Disable for now
-//							Physics.applyCollisionImpulse(b1, b2, deltaTime);
+							Physics.applyCollisionImpulse(b1, b2, deltaTime);
 						}
 					}
 				}
