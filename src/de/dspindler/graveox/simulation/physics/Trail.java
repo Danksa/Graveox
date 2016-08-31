@@ -12,6 +12,7 @@ public class Trail
 	private RigidBody			parent;
 	private ArrayList<Vector2>	points;
 	private int					length;
+	private Color				color;
 	
 	public Trail(RigidBody parent, int length)
 	{
@@ -20,6 +21,7 @@ public class Trail
 		this.points = new ArrayList<Vector2>();
 		this.points.add(position.clone());
 		this.length = length;
+		this.color = Color.GREEN;
 	}
 	
 	public Trail(RigidBody parent)
@@ -40,6 +42,11 @@ public class Trail
 	public boolean isAttachedTo(RigidBody body)
 	{
 		return parent == body;
+	}
+	
+	public void setColor(Color color)
+	{
+		this.color = color;
 	}
 	
 	public void update(double deltaTime)
@@ -66,7 +73,7 @@ public class Trail
 //		g.fillText("Length: " + points.size(), position.x + 5, position.y - 7);
 		
 		// Draw trail
-		g.setStroke(Color.GREEN);
+		g.setStroke(this.color);
 		for(int i = 0; i < points.size() - 1; ++i)
 		{
 			g.strokeLine(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
