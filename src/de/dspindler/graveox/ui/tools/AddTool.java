@@ -21,38 +21,47 @@ public class AddTool extends Tool
 	
 	private Vector2[]			predictorPoints;
 	
+	// Planet properties
+	private double				mass;
+	private double				radius;
+	
 	public AddTool(SimulationController simulation)
 	{
-		super("Add", "Use to add new bodies to the simulation.", simulation);
+		super("Add", "Use to add new bodies to the simulation.", simulation, null);
 		
-		dragStartPosition = new Vector2();
-		dragEndPosition = new Vector2();
-		forceMultiplier = 1.0d;
-		dragging = false;
+		this.dragStartPosition = new Vector2();
+		this.dragEndPosition = new Vector2();
+		this.forceMultiplier = 1.0d;
+		this.dragging = false;
 		
-		predictorPoints = new Vector2[100];
+		this.predictorPoints = new Vector2[400];
 		for(int i = 0; i < predictorPoints.length; ++i)
 		{
-			predictorPoints[i] = new Vector2();
+			this.predictorPoints[i] = new Vector2();
 		}
+		
+		this.mass = 10.0d;
+		this.radius = 5.0d;
 	}
 	
 	private void calculatePredictor()
 	{
 		// Calculate predictor
-		double mass = 10.0d;
-		double radius = 5.0d;
 		double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
 		Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
 				
 		Star s = new Star(simulation.getData().getCamera().toWorldSpace(dragStartPosition), velocity, mass, 0.0d, 0.0d, 1.0d, radius);
 		predictorPoints[0].set(dragStartPosition);
 		
+		double distance = 0.0d;
+		Vector2 oldPos = new Vector2();
 		int pointIndex = 1;
 		Vector2 gravity;
 		
 		while(pointIndex < predictorPoints.length)
 		{
+			oldPos.set(s.getPosition());
+			
 			s.preUpdate(1.0d / 60.0d);
 			
 			// Simulate body
@@ -64,9 +73,13 @@ public class AddTool extends Tool
 			
 			s.update(1.0d / 60.0d, 0.0d);
 			
+			distance += Vector2.getDistance(oldPos, s.getPosition());
+			
 			// Place predictor point
-			if(Vector2.getDistance(s.getPosition(), predictorPoints[pointIndex - 1]) >= 10.0d)
+//			if(Vector2.getDistance(s.getPosition(), predictorPoints[pointIndex - 1]) >= 10.0d)
+			if(distance >= 10.0d)
 			{
+				distance = 0.0d;
 				predictorPoints[pointIndex++].set(simulation.getData().getCamera().toCameraSpace(s.getPosition()));
 			}
 		}
@@ -87,8 +100,6 @@ public class AddTool extends Tool
 		dragging = false;
 		
 		// Spawn body
-		double mass = 10.0d;
-		double radius = 5.0d;
 		double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
 		Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
 		
@@ -182,13 +193,13 @@ public class AddTool extends Tool
 			
 			// Draw body
 			g.setFill(Color.ORANGE);
-			g.fillOval(dragStartPosition.x - 5, dragStartPosition.y - 5, 10, 10);
+			g.fillOval(dragStartPosition.x - radius, dragStartPosition.y - radius, radius * 2.0d, radius * 2.0d);
 			
 			// Draw force strength
 			double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
 			
 			g.setFill(Color.WHITE);
-			g.fillText(String.format("Force: %.2f", force), dragStartPosition.x + 5, dragStartPosition.y - 5);
+			g.fillText(String.format("Force: %.2f", force), dragStartPosition.x + radius, dragStartPosition.y - radius);
 		}
 	}
 	

@@ -49,8 +49,8 @@ public class WindowController
 		@Override
 		public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth)
 		{
-			view.getSimulationView().getCanvas().setWidth(newSceneWidth.doubleValue());
-			simulation.setWidth(newSceneWidth.doubleValue());
+			view.getSimulationView().getCanvas().setWidth(newSceneWidth.doubleValue() - view.getToolPanel().getWidth());
+			simulation.setWidth(newSceneWidth.doubleValue() - view.getToolPanel().getWidth());
 		}
 	}
 	
@@ -60,8 +60,6 @@ public class WindowController
 		public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight)
 		{
 			view.getSimulationView().getCanvas().setHeight(newSceneHeight.doubleValue());
-			
-			// Subtract toolbar height from scene height and send it to the simulation
 			simulation.setHeight(newSceneHeight.doubleValue() - view.getToolbar().getHeight());
 		}
 	}
@@ -77,6 +75,9 @@ public class WindowController
 				
 				// Select new tool
 				simulation.getData().selectTool(selected);
+				
+				// Display corresponding tool panel
+				view.setToolPanel(selected.getPanel());
 				
 				System.out.println("The tool \"" + selected.getName() + "\" was selected!");
 			}

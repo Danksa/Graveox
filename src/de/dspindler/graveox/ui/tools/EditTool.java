@@ -20,7 +20,7 @@ public class EditTool extends Tool
 	
 	public EditTool(SimulationController simulation)
 	{
-		super("Edit", "Use to edit and manipulate bodies.", simulation);
+		super("Edit", "Use to edit and manipulate bodies.", simulation, new EditToolPanel());
 		
 		selectedBody = null;
 		grid = new Grid(new Vector2(), 200.0d, 10, 12);

@@ -7,8 +7,8 @@ import javafx.scene.input.MouseEvent;
 
 public class SimulationView
 {
-	private Canvas			canvas;
-	private GraphicsContext	context;
+	private Canvas		canvas;
+	private GraphicsContext		context;
 
 	public SimulationView()
 	{
@@ -23,6 +23,7 @@ public class SimulationView
 						canvas.requestFocus();
 					}			
 				});
+		
 		this.context = canvas.getGraphicsContext2D();
 	}
 	

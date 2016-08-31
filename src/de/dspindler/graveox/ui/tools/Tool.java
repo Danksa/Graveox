@@ -8,18 +8,35 @@ import javafx.scene.paint.Color;
 
 public abstract class Tool extends EventListener
 {
+	// Tool properties
 	private String					name;
 	private String					tooltip;
+	
+	// Simulation instance
 	protected SimulationController	simulation;
 	
-	public Tool(String name, String tooltip, SimulationController simulation)
+	// Corresponding ToolPanel
+	protected ToolPanel				panel;
+	
+	public Tool(String name, String tooltip, SimulationController simulation, ToolPanel panel)
 	{
 		this.name = name;
 		this.tooltip = tooltip;
 		this.simulation = simulation;
+		this.panel = panel;
 		
 		// Disable listener as default
 		super.setEnabled(false);
+	}
+	
+	public boolean hasPanel()
+	{
+		return panel != null;
+	}
+	
+	public ToolPanel getPanel()
+	{
+		return panel;
 	}
 	
 	public String getName()

@@ -9,6 +9,8 @@ import de.dspindler.graveox.ui.tools.EditTool;
 import de.dspindler.graveox.ui.tools.Tool;
 import de.dspindler.graveox.util.Vector2;
 import javafx.animation.AnimationTimer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
