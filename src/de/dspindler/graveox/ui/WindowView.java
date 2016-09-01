@@ -1,5 +1,7 @@
 package de.dspindler.graveox.ui;
 
+import de.dspindler.graveox.simulation.SimulationController;
+import de.dspindler.graveox.simulation.SimulationData;
 import de.dspindler.graveox.simulation.SimulationView;
 import de.dspindler.graveox.ui.tools.EmptyToolPanel;
 import de.dspindler.graveox.ui.tools.Tool;
@@ -22,7 +24,7 @@ public class WindowView
 	private AnchorPane		rootPane;
 	
 	// Basic layout
-	private BorderPane		mainPane;
+	private AnchorPane		mainPane;
 	
 	// Simulation
 	private SimulationView	simulationView;
@@ -39,7 +41,7 @@ public class WindowView
 	public WindowView()
 	{
 		rootPane = new AnchorPane();
-		mainPane = new BorderPane();
+		mainPane = new AnchorPane();
 		AnchorPane.setTopAnchor(mainPane, 0.0d);
 		AnchorPane.setBottomAnchor(mainPane, 0.0d);
 		AnchorPane.setLeftAnchor(mainPane, 0.0d);
@@ -47,7 +49,13 @@ public class WindowView
 		
 		rootPane.getChildren().add(mainPane);
 		
-		scene = new Scene(rootPane, 1024, 768);
+		scene = new Scene(rootPane, 1024 + 200, 768);
+	}
+	
+	public void init(SimulationController controller)
+	{
+		setSimulationView(controller.getView());
+		initToolbar(controller.getData().getTools());
 	}
 	
 	public void initToolbar(Tool[] tools)
@@ -80,8 +88,13 @@ public class WindowView
 		toolbar.getItems().add(new Separator());
 		
 		// Place toolbar in top pane of the mainPane
-		mainPane.setTop(toolbar);
-		mainPane.getTop().maxHeight(toolbar.getHeight());
+		AnchorPane.setTopAnchor(toolbar, 0.0d);
+		AnchorPane.setLeftAnchor(toolbar, 0.0d);
+		AnchorPane.setRightAnchor(toolbar, 0.0d);
+		toolbar.minHeight(36.0d);
+		toolbar.prefHeight(36.0d);
+		toolbar.maxHeight(36.0d);
+		mainPane.getChildren().add(toolbar);
 	}
 	
 	public void show(Stage stage, String versionString)
@@ -95,17 +108,11 @@ public class WindowView
 	{
 		this.simulationView = simulationView;
 		
-		AnchorPane.setTopAnchor(simulationView.getCanvas(), 0.0d);
-		AnchorPane.setBottomAnchor(simulationView.getCanvas(), 0.0d);
+		AnchorPane.setTopAnchor(simulationView.getCanvas(), 36.0d);
 		AnchorPane.setLeftAnchor(simulationView.getCanvas(), 0.0d);
-		AnchorPane.setRightAnchor(simulationView.getCanvas(), 0.0d);
-		this.simulationPane = new AnchorPane(simulationView.getCanvas());
-		
-		this.mainPane.setCenter(simulationPane);
-//		this.mainPane.setCenter(simulationView.getCanvas());
-		this.mainPane.getCenter().maxWidth(Double.MAX_VALUE);
-		this.mainPane.getCenter().maxHeight(Double.MAX_VALUE);
-//		this.simulationView.getCanvas().setHeight(simulationView.getCanvas().getHeight() - toolbar.getHeight());
+		AnchorPane.setRightAnchor(simulationView.getCanvas(), 200.0d);
+		AnchorPane.setBottomAnchor(simulationView.getCanvas(), 0.0d);
+		this.mainPane.getChildren().add(simulationView.getCanvas());
 	}
 	
 	public void setToolPanel(ToolPanel panel)
@@ -116,10 +123,14 @@ public class WindowView
 		}
 		
 		this.toolPanel = panel;
-		this.mainPane.setRight(panel);
-		this.mainPane.getRight().minWidth(panel.getWidth());
-		this.mainPane.getRight().prefWidth(panel.getWidth());
-		this.mainPane.getRight().maxWidth(panel.getWidth());
+		this.toolPanel.minWidth(200.0d);
+		this.toolPanel.prefWidth(200.0d);
+		this.toolPanel.maxWidth(200.0d);
+		
+		AnchorPane.setTopAnchor(panel, 36.0d);
+		AnchorPane.setRightAnchor(panel, 0.0d);
+		AnchorPane.setBottomAnchor(panel, 0.0d);
+		this.mainPane.getChildren().add(panel);
 	}
 	
 	public ToolPanel getToolPanel()
@@ -127,7 +138,7 @@ public class WindowView
 		return toolPanel;
 	}
 	
-	public BorderPane getMainPane()
+	public AnchorPane getMainPane()
 	{
 		return mainPane;
 	}

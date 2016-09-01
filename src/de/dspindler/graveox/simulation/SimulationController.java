@@ -217,6 +217,7 @@ public class SimulationController
 			g.setFill(Color.WHITE);
 			// Draw some text here
 			g.fillText(String.format("World Time: %.2fs", data.getTime()), 2, 10);
+			g.fillText(String.format("Dim: %s", data.getCamera().getSpaceSize().clone().scale(2.0d)), 2, 20);
 		}
 		
 		@Override
