@@ -25,11 +25,8 @@ public class WindowController
 		// Initialize simulation
 		this.simulation = new SimulationController(new SimulationData());
 		
-		// Initialize tools
-		this.view.initToolbar(simulation.getData().getTools());
-		
-		// Show simulation
-		this.view.setSimulationView(simulation.getView());
+		// Put simulation into view
+		this.view.init(simulation);
 		
 		// Attach event handlers
 		this.view.getScene().widthProperty().addListener(new WidthListener());
