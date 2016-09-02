@@ -17,13 +17,14 @@ public abstract class RigidBody
 	private double				angularAcceleration;
 	protected double			inertia;
 	
-	// Other properties
+	// Trail
+	private Trail				trail;
 	
 	// For optimization
-	private double			inverseMass;
-	private double			inverseInertia;
-	private Vector2			netForce;
-	private double			netTorque;
+	private double				inverseMass;
+	private double				inverseInertia;
+	private Vector2				netForce;
+	private double				netTorque;
 	
 	public RigidBody(Vector2 position, Vector2 velocity, double mass, double angle, double angularVelocity, double inertia)
 	{
@@ -41,11 +42,39 @@ public abstract class RigidBody
 		this.inverseInertia = 1.0d / inertia;
 		this.netForce = new Vector2();
 		this.netTorque = 0.0d;
+		
+		this.trail = null;
 	}
 	
 	public RigidBody()
 	{
 		this(new Vector2(), new Vector2(), 1.0d, 0.0d, 0.0d, 1.0d);
+	}
+	
+	public void attachTrail(Trail trail)
+	{
+		this.trail = trail;
+		this.trail.attach(this);
+	}
+	
+	public void detachTrail()
+	{
+		this.trail = null;
+	}
+	
+	public void showTrail(boolean show)
+	{
+		this.trail.show(show);
+	}
+	
+	public boolean isTrailShown()
+	{
+		return trail.isShown();
+	}
+	
+	public boolean hasTrail()
+	{
+		return trail != null;
 	}
 	
 	public void applyForce(Vector2 force, Vector2 point)
@@ -108,12 +137,20 @@ public abstract class RigidBody
 		angularVelocity += angularAcceleration;
 	}
 	
-	public void update(double deltaTime, double time)
+	public void update(double deltaTime)
 	{
 		updateLinear(deltaTime);
 		updateRotational(deltaTime);
 		
-		onUpdate(deltaTime, time);
+		onUpdate(deltaTime);
+	}
+	
+	public void updateTrail(double deltaTime)
+	{
+		if(this.hasTrail())
+		{
+			this.trail.update(deltaTime);
+		}
 	}
 	
 	private void updateLinear(double deltaTime)
@@ -141,7 +178,15 @@ public abstract class RigidBody
 		onRender(g);
 	}
 	
-	protected abstract void onUpdate(double deltaTime, double time);
+	public void renderTrail(GraphicsContext g)
+	{
+		if(this.hasTrail())
+		{
+			this.trail.render(g);
+		}
+	}
+	
+	protected abstract void onUpdate(double deltaTime);
 	protected abstract void onRender(GraphicsContext g);
 	
 	public void setPosition(Vector2 position)

@@ -148,5 +148,8 @@ public class Camera
 		g.translate(spaceSize.x, spaceSize.y);
 		g.scale(scale, scale);
 		g.translate(-position.x, -position.y);
+		
+//		System.out.println("[Camera][Position: " + position + "]");
+//		System.out.println("[Camera][ " + position.hashCode() + " ]");
 	}
 }

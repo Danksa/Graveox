@@ -1,39 +1,20 @@
 package de.dspindler.graveox.simulation;
 
-import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
-public class SimulationView
+public class SimulationView extends Canvas
 {
-	private Canvas		canvas;
-	private GraphicsContext		context;
-
 	public SimulationView()
 	{
-		this.canvas = new Canvas(1024, 768);
-		
-		// Request focus on click, so that it can receive key events
-		this.canvas.addEventFilter(MouseEvent.ANY, new EventHandler<MouseEvent>()
-				{
-					@Override
-					public void handle(MouseEvent e)
-					{
-						canvas.requestFocus();
-					}			
-				});
-		
-		this.context = canvas.getGraphicsContext2D();
+		// Request focus on mouse event, to enable key events
+		super.addEventFilter(MouseEvent.ANY, (e) -> super.requestFocus());
 	}
 	
-	public GraphicsContext getContext()
+	public void clear()
 	{
-		return context;
-	}
-	
-	public Canvas getCanvas()
-	{
-		return canvas;
+		super.getGraphicsContext2D().setFill(Color.BLACK);
+		super.getGraphicsContext2D().fillRect(0.0d, 0.0d, super.getWidth(), super.getHeight());
 	}
 }

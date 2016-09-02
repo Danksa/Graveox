@@ -13,35 +13,40 @@ public class Trail
 	private ArrayList<Vector2>	points;
 	private int					length;
 	private Color				color;
+	private boolean				show;
 	
-	public Trail(RigidBody parent, int length)
+	public Trail(int length)
 	{
-		this.position = parent.getPosition().clone();
-		this.parent = parent;
+		this.position = new Vector2();
+		this.parent = null;
 		this.points = new ArrayList<Vector2>();
-		this.points.add(position.clone());
+//		this.points.add(position.clone());
 		this.length = length;
 		this.color = Color.GREEN;
-	}
-	
-	public Trail(RigidBody parent)
-	{
-		this(parent, -1);
+		this.show = true;
 	}
 	
 	public Trail()
 	{
-		this(null, -1);
+		this(-1);
+	}
+	
+	public void show(boolean show)
+	{
+		this.show = show;
+	}
+	
+	public boolean isShown()
+	{
+		return show;
 	}
 	
 	public void attach(RigidBody body)
 	{
 		this.parent = body;
-	}
-	
-	public boolean isAttachedTo(RigidBody body)
-	{
-		return parent == body;
+		this.position.set(body.getPosition());
+//		this.points.clear();
+		this.points.add(body.getPosition().clone());
 	}
 	
 	public void setColor(Color color)
@@ -53,15 +58,22 @@ public class Trail
 	{
 		if(parent != null)
 		{
-			position.set(parent.getPosition());
-			
-			if(Vector2.getDistanceSquared(position, points.get(points.size() - 1)) >= 100.0d)
+			if(points.size() == 0)
 			{
 				points.add(parent.getPosition().clone());
+			}
+			else
+			{
+				position.set(parent.getPosition());
 				
-				if(length > 0 && points.size() > length)
+				if(Vector2.getDistanceSquared(position, points.get(points.size() - 1)) >= 100.0d)
 				{
-					points.remove(0);
+					points.add(parent.getPosition().clone());
+					
+					if(length > 0 && points.size() > length)
+					{
+						points.remove(0);
+					}
 				}
 			}
 		}

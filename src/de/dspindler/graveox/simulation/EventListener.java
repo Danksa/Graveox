@@ -4,35 +4,18 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
-public abstract class EventListener
+public interface EventListener
 {
-	private boolean			enabled;
+	public void onMousePressed(MouseEvent e);
+	public void onMouseReleased(MouseEvent e);
+	public void onMouseClicked(MouseEvent e);
 	
-	public EventListener()
-	{
-		this.enabled = true;
-	}
+	public void onMouseMoved(MouseEvent e);
+	public void onMouseDragged(MouseEvent e);
 	
-	public void setEnabled(boolean enabled)
-	{
-		this.enabled = enabled;
-	}
+	public void onMouseScrolled(ScrollEvent e);
 	
-	public boolean isEnabled()
-	{
-		return enabled;
-	}
-	
-	public abstract void onMousePressed(MouseEvent e);
-	public abstract void onMouseReleased(MouseEvent e);
-	public abstract void onMouseClicked(MouseEvent e);
-	
-	public abstract void onMouseMoved(MouseEvent e);
-	public abstract void onMouseDragged(MouseEvent e);
-	
-	public abstract void onMouseScrolled(ScrollEvent e);
-	
-	public abstract void onKeyPressed(KeyEvent e);
-	public abstract void onKeyReleased(KeyEvent e);
-	public abstract void onKeyTyped(KeyEvent e);
+	public void onKeyPressed(KeyEvent e);
+	public void onKeyReleased(KeyEvent e);
+	public void onKeyTyped(KeyEvent e);
 }
