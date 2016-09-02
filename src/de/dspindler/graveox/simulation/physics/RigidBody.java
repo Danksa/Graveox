@@ -1,5 +1,6 @@
 package de.dspindler.graveox.simulation.physics;
 
+import de.dspindler.graveox.simulation.physics.collision.CollisionShape;
 import de.dspindler.graveox.util.Vector2;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -17,6 +18,9 @@ public abstract class RigidBody
 	private double				angularAcceleration;
 	protected double			inertia;
 	
+	// Collision
+	private CollisionShape		collisionShape;
+	
 	// Trail
 	private Trail				trail;
 	
@@ -26,7 +30,7 @@ public abstract class RigidBody
 	private Vector2				netForce;
 	private double				netTorque;
 	
-	public RigidBody(Vector2 position, Vector2 velocity, double mass, double angle, double angularVelocity, double inertia)
+	public RigidBody(Vector2 position, Vector2 velocity, double mass, double angle, double angularVelocity, double inertia, CollisionShape collisionShape)
 	{
 		this.position = position.clone();
 		this.velocity = velocity.clone();
@@ -43,12 +47,19 @@ public abstract class RigidBody
 		this.netForce = new Vector2();
 		this.netTorque = 0.0d;
 		
+		this.collisionShape = collisionShape;
+		
 		this.trail = null;
 	}
 	
-	public RigidBody()
+	public RigidBody(CollisionShape collisionShape)
 	{
-		this(new Vector2(), new Vector2(), 1.0d, 0.0d, 0.0d, 1.0d);
+		this(new Vector2(), new Vector2(), 1.0d, 0.0d, 0.0d, 1.0d, collisionShape);
+	}
+	
+	public CollisionShape getCollisionShape()
+	{
+		return collisionShape;
 	}
 	
 	public void attachTrail(Trail trail)
@@ -69,12 +80,22 @@ public abstract class RigidBody
 	
 	public boolean isTrailShown()
 	{
+		if(trail == null)
+		{
+			return false;
+		}
+		
 		return trail.isShown();
 	}
 	
 	public boolean hasTrail()
 	{
 		return trail != null;
+	}
+	
+	public Trail getTrail()
+	{
+		return trail;
 	}
 	
 	public void applyForce(Vector2 force, Vector2 point)

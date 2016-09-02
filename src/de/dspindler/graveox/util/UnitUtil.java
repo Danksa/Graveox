@@ -29,4 +29,9 @@ public class UnitUtil
 		int index = Math.min(Math.max(exp, -18), 18) / 3 + 6;
 		return String.format("%." + decimals + "f%s", value * Math.pow(1000.0d, -index + 6), units[index]);
 	}
+	
+	public static double convertValue(double value, String fromUnit, String toUnit)
+	{
+		return value;
+	}
 }

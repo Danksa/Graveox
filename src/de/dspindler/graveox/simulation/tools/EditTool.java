@@ -2,11 +2,17 @@ package de.dspindler.graveox.simulation.tools;
 
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Star;
+import de.dspindler.graveox.simulation.physics.Trail;
 import de.dspindler.graveox.util.Vector2;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.paint.Color;
 
 public class EditTool extends Tool
 {
@@ -30,6 +36,23 @@ public class EditTool extends Tool
 		
 		this.state = State.IDLE;
 		this.dragStartPosition = new Vector2();
+		
+		// Tool Panel listeners
+		((EditToolPanel) super.getPanel()).getTrailEnableBox().selectedProperty().addListener(new ChangeListener<Boolean>(){
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldVal, Boolean newVal)
+			{
+				if(selectedBody != null)
+				{
+					if(!selectedBody.hasTrail())
+					{
+						selectedBody.attachTrail(new Trail(200));
+					}
+					selectedBody.getTrail().show(newVal);
+					((EditToolPanel) getPanel()).updateValues(selectedBody);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -42,18 +65,15 @@ public class EditTool extends Tool
 		selectedBody = null;
 		for(RigidBody b : super.getSimulation().getModel().getBodies())
 		{
-			if(b instanceof Star)
+			if(Vector2.getDistance(pos, b.getPosition()) <= b.getCollisionShape().getBroadRadius())
 			{
-				if(Vector2.getDistance(pos, b.getPosition()) <= ((Star) b).getRadius())
-					{
-						selectedBody = b;
-						
-						// Center camera on body
-						super.getSimulation().getModel().getCamera().setTrackedBody(selectedBody);
-						super.getSimulation().getModel().getCamera().setPositionSmoothingFactor(1.0d);	// Disable camera smoothing while tracking body
-						
-						break;
-					}
+				selectedBody = b;
+				
+				// Center camera on body
+				super.getSimulation().getModel().getCamera().setTrackedBody(selectedBody);
+				super.getSimulation().getModel().getCamera().setPositionSmoothingFactor(1.0d);	// Disable camera smoothing while tracking body
+				
+				break;
 			}
 		}
 		
@@ -64,6 +84,9 @@ public class EditTool extends Tool
 			super.getSimulation().getModel().getCamera().setTrackedBody(null);
 			super.getSimulation().getModel().getCamera().setPositionSmoothingFactor(0.1d);	// Enable camera smoothing while dragging the view
 			this.state = State.DRAGGING_VIEW;
+			
+			// Update tool panel
+			((EditToolPanel) super.getPanel()).updateValues(null);
 		}
 	}
 
@@ -121,12 +144,36 @@ public class EditTool extends Tool
 	public void onKeyTyped(KeyEvent e){}
 
 	@Override
-	public void update(double deltaTime){}
+	public void update(double deltaTime)
+	{
+		if(selectedBody != null)
+		{
+			((EditToolPanel) this.getPanel()).updateValues(selectedBody);
+		}
+	}
 
 	@Override
 	public void renderForeground(GraphicsContext g)
 	{
 		super.drawLengthScale(g);
+		
+		// Highlight selected body
+		// Need to make this nicer!
+		if(selectedBody != null)
+		{
+			g.setStroke(Color.AQUAMARINE);
+			Vector2 pos = super.getSimulation().getModel().getCamera().toCameraSpace(selectedBody.getPosition());
+			double ang;
+			int steps = Math.max((int)(16.0d * super.getSimulation().getModel().getCamera().getScale()), 16);
+			double step = 2.0d * Math.PI / steps;
+			double radius = selectedBody.getCollisionShape().getBroadRadius() * super.getSimulation().getModel().getCamera().getSmoothedScale();
+			
+			for(int i = 0; i < steps; ++i)
+			{
+				ang = step * i;
+				g.strokeLine(pos.x + Math.cos(ang) * radius, pos.y + Math.sin(ang) * radius, pos.x + Math.cos(ang + step) * radius, pos.y + Math.sin(ang + step) * radius);
+			}
+		}
 	}
 
 	@Override

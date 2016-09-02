@@ -20,7 +20,6 @@ public class Trail
 		this.position = new Vector2();
 		this.parent = null;
 		this.points = new ArrayList<Vector2>();
-//		this.points.add(position.clone());
 		this.length = length;
 		this.color = Color.GREEN;
 		this.show = true;
@@ -34,6 +33,11 @@ public class Trail
 	public void show(boolean show)
 	{
 		this.show = show;
+		
+		if(!show)
+		{
+			points.clear();
+		}
 	}
 	
 	public boolean isShown()
@@ -45,7 +49,6 @@ public class Trail
 	{
 		this.parent = body;
 		this.position.set(body.getPosition());
-//		this.points.clear();
 		this.points.add(body.getPosition().clone());
 	}
 	
@@ -56,7 +59,7 @@ public class Trail
 	
 	public void update(double deltaTime)
 	{
-		if(parent != null)
+		if(parent != null && show)
 		{
 			if(points.size() == 0)
 			{
@@ -81,16 +84,16 @@ public class Trail
 	
 	public void render(GraphicsContext g)
 	{
-//		g.setFill(Color.WHITE);
-//		g.fillText("Length: " + points.size(), position.x + 5, position.y - 7);
-		
-		// Draw trail
-		g.setStroke(this.color);
-		for(int i = 0; i < points.size() - 1; ++i)
+		if(show)
 		{
-			g.strokeLine(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
+			// Draw trail
+			g.setStroke(this.color);
+			for(int i = 0; i < points.size() - 1; ++i)
+			{
+				g.strokeLine(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
+			}
+			
+			g.strokeLine(position.x, position.y, points.get(points.size() - 1).x, points.get(points.size() - 1).y);
 		}
-		
-		g.strokeLine(position.x, position.y, points.get(points.size() - 1).x, points.get(points.size() - 1).y);
 	}
 }
