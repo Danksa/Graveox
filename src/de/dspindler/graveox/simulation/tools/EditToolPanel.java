@@ -1,4 +1,4 @@
-package de.dspindler.graveox.ui.tools;
+package de.dspindler.graveox.simulation.tools;
 
 public class EditToolPanel extends ToolPanel
 {

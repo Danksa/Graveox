@@ -41,10 +41,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onMouseClicked(e);
-				}
+				l.onMouseClicked(e);
 			}
 		}
 	}
@@ -56,10 +53,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onMousePressed(e);
-				}
+				l.onMousePressed(e);
 			}
 		}	
 	}
@@ -71,10 +65,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onMouseReleased(e);
-				}
+				l.onMouseReleased(e);
 			}
 		}	
 	}
@@ -86,10 +77,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onMouseDragged(e);
-				}
+				l.onMouseDragged(e);
 			}
 		}
 	}
@@ -101,10 +89,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onMouseMoved(e);
-				}
+				l.onMouseMoved(e);
 			}
 		}	
 	}
@@ -116,10 +101,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onMouseScrolled(e);
-				}
+				l.onMouseScrolled(e);
 			}
 		}	
 	}
@@ -131,10 +113,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onKeyPressed(e);
-				}
+				l.onKeyPressed(e);
 			}
 		}	
 	}
@@ -146,10 +125,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onKeyReleased(e);
-				}
+				l.onKeyReleased(e);
 			}
 		}	
 	}
@@ -161,10 +137,7 @@ public class SimulationHandler
 		{
 			for(EventListener l : listeners)
 			{
-				if(l.isEnabled())
-				{
-					l.onKeyTyped(e);
-				}
+				l.onKeyTyped(e);
 			}
 		}	
 	}

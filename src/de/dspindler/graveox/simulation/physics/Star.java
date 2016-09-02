@@ -23,7 +23,7 @@ public class Star extends RigidBody
 	}
 
 	@Override
-	protected void onUpdate(double deltaTime, double time)
+	protected void onUpdate(double deltaTime)
 	{
 		
 	}
