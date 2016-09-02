@@ -37,7 +37,7 @@ public class SimulationPresenter implements WindowListener
 		Star body = new Star();
 		body.setPosition(new Vector2(0.0d, 0.0d));
 		body.setVelocity(new Vector2(0.0d, 0.0d));
-		body.setMass(100000.0d);
+		body.setMass(10000000.0d);
 		body.setRadius(10.0d);
 		
 		this.model.addBody(body);

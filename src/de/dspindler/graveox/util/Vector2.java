@@ -143,7 +143,7 @@ public class Vector2
 	
 	public String toString()
 	{
-		return String.format("[Vector2][%.2f | %.2f]", x, y);
+		return String.format("[%.2f | %.2f]", x, y);
 	}
 	
 	// Static mathods

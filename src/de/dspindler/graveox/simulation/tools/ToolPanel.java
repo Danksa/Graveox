@@ -10,5 +10,6 @@ public abstract class ToolPanel extends TitledPane
 		super.setText(title);
 		super.setCollapsible(false);
 		super.setPrefWidth(300.0d);
+		super.setPrefHeight(USE_COMPUTED_SIZE);
 	}
 }
