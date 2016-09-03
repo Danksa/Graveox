@@ -39,7 +39,7 @@ public class AddTool extends Tool
 			this.predictorPoints[i] = new Vector2();
 		}
 		
-		this.mass = 0.1d;
+		this.mass = 0.00001d;
 		this.radius = 5.0d;
 	}
 
@@ -56,17 +56,19 @@ public class AddTool extends Tool
 		Vector2 oldPos = new Vector2();
 		int pointIndex = 1;
 		Vector2 gravity;
+		double deltaTime = super.getSimulation().getModel().getTimeScale() / (60.0d * super.getSimulation().getModel().getSimulationSteps());
 		
 		while(pointIndex < predictorPoints.length)
 		{
 			oldPos.set(s.getPosition());
 			
-			s.preUpdate(1.0d / 60.0d);
+			s.preUpdate(deltaTime);
 			
 			// Simulate body
 			for(RigidBody b : super.getSimulation().getModel().getBodies())
 			{
 				gravity = Physics.getRelativisticGravity(s, b).scale(2.0d);
+//				gravity = Physics.getNewtonianGravity(s, b).scale(2.0d);
 				s.applyForce(gravity);
 				
 				// check if inside the photon sphere, if so, there is no need to further calculate
@@ -80,7 +82,7 @@ public class AddTool extends Tool
 				}
 			}
 			
-			s.update(1.0d / 60.0d);
+			s.update(deltaTime);
 			
 			distance += Vector2.getDistance(oldPos, s.getPosition());
 			

@@ -235,6 +235,7 @@ public class EditToolPanel extends ToolPanel
 			super.getChildren().add(valueLabel);
 		}
 		
+		@SuppressWarnings("unused")
 		public String getName()
 		{
 			return name;
@@ -246,6 +247,7 @@ public class EditToolPanel extends ToolPanel
 			this.valueLabel.setText(value);
 		}
 		
+		@SuppressWarnings("unused")
 		public String getValue()
 		{
 			return value;

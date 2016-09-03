@@ -82,6 +82,11 @@ public class SimulationPresenter implements WindowListener
 	{
 		return view;
 	}
+	
+	public void setTimeScale(double timeScale)
+	{
+		this.model.setTimeScale(timeScale);
+	}
 
 	@Override
 	public void toolSelected(int index)
@@ -97,6 +102,12 @@ public class SimulationPresenter implements WindowListener
 		
 		// Show tool panel
 		this.window.selectTool(model.getSelectedTool());
+	}
+	
+	@Override
+	public void timescaleChanged(double timeScale)
+	{
+		this.model.setTimeScale(timeScale);
 	}
 	
 	private class SimulationTimer extends AnimationTimer
@@ -133,6 +144,7 @@ public class SimulationPresenter implements WindowListener
 					if(a != b)
 					{
 						Physics.applyRelativisticGravity(a, b);
+//						Physics.applyNewtonianGravity(a, b);
 					}
 				}
 			}
@@ -176,10 +188,9 @@ public class SimulationPresenter implements WindowListener
 			
 			// Render text
 			g.setFill(Color.WHITE);
-			g.fillText("Time: " + model.getTime(), 2, 10);
+			g.fillText(String.format("Time: %.2f     Scale: %.2f", model.getTime(), model.getTimeScale()), 2, 10);
 			g.fillText("Cam: " + model.getCamera().getPosition(), 2, 20);
 			g.fillText("Tracking: " + (model.getCamera().getTrackedBody() != null), 2, 30);
-//			g.fillText("Test: M\u2609", 2, 50);
 		}
 		
 		@Override

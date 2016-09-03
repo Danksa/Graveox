@@ -5,6 +5,7 @@ import de.dspindler.graveox.simulation.tools.Tool;
 import de.dspindler.graveox.simulation.tools.ToolPanel;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
@@ -23,6 +24,7 @@ public class WindowView
 	private ToolBar			toolbar;
 	private ToggleButton[]	toolButtons;
 	private ToggleGroup		toolGroup;
+	private Slider			timescaleSlider;
 	
 	// Simulation view pane
 	private AnchorPane		simulationPane;
@@ -82,6 +84,22 @@ public class WindowView
 		this.rootPane.getChildren().add(toolPane);
 	}
 	
+	private void initTimescaleSlider()
+	{
+		// Initialize time scale slider
+		this.timescaleSlider = new Slider();
+		this.timescaleSlider.setMin(0.01d);
+		this.timescaleSlider.setMax(5.0d);
+		this.timescaleSlider.setShowTickLabels(false);
+		this.timescaleSlider.setShowTickMarks(false);
+		
+		// TODO: calculate the start value
+//		this.timescaleSlider.setValue(Math.log(5.0d) * 5.0d);
+		
+		// TODO: add again and implement correctly!
+//		this.toolbar.getItems().add(timescaleSlider);
+	}
+	
 	private void initSimulationPane()
 	{
 		this.simulationPane = new AnchorPane();
@@ -112,6 +130,9 @@ public class WindowView
 			this.addToolbarItem(toolButtons[i]);
 		}
 		this.toolButtons[0].setSelected(true);
+		
+		// After adding tools, so that it is to the right
+		this.initTimescaleSlider();
 	}
 	
 	public void addToolbarItem(Node node)
@@ -149,5 +170,10 @@ public class WindowView
 	public ToggleGroup getToolGroup()
 	{
 		return toolGroup;
+	}
+	
+	public Slider getTimescaleSlider()
+	{
+		return timescaleSlider;
 	}
 }
