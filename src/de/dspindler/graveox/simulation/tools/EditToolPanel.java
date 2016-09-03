@@ -3,14 +3,18 @@ package de.dspindler.graveox.simulation.tools;
 import java.text.DecimalFormat;
 
 import de.dspindler.graveox.simulation.physics.RigidBody;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -30,6 +34,12 @@ public class EditToolPanel extends ToolPanel
 	private TitledPane			trailPane;
 	private AnchorPane			trailAnchor;
 	private CheckBox			trailEnableBox;
+	private Label				trailColorLabel;
+	private ColorPicker			trailColorPicker;
+	private Label				trailLengthLabel;
+	private Slider				trailLengthSlider;
+	private CheckBox			trailLengthBox;
+	
 	
 	public EditToolPanel()
 	{
@@ -48,17 +58,22 @@ public class EditToolPanel extends ToolPanel
 	
 	private void initInfoTab()
 	{
+		// Info pane
 		this.infoPane = new TitledPane();
 		this.infoPane.setText("Body Information");
 		
+		// Info items
 		this.infoItems = new ListItem[4];
 		this.infoItems[0] = new ListItem("Mass", "");
 		this.infoItems[1] = new ListItem("Inertia", "");
 		this.infoItems[2] = new ListItem("Position", "");
 		this.infoItems[3] = new ListItem("Velocity", "");
 		
+		// Initialize info list and add above items
 		this.infoList = new ListView<ListItem>();
 		this.infoList.getItems().addAll(infoItems);
+		
+		// Disable selection of list
 		this.infoList.setSelectionModel(new DisabledSelectionModel<ListItem>());
 		
 		this.infoPane.setContent(infoList);
@@ -66,15 +81,65 @@ public class EditToolPanel extends ToolPanel
 	
 	private void initTrailTab()
 	{
+		// Trail panes
 		this.trailPane = new TitledPane();
 		this.trailPane.setText("Trail");
 		this.trailAnchor = new AnchorPane();
 		
+		// Trail enable check box
 		this.trailEnableBox = new CheckBox("Show Trail");
 		this.trailEnableBox.setLayoutX(5.0d);
 		this.trailEnableBox.setLayoutY(5.0d);
-		
 		this.trailAnchor.getChildren().add(trailEnableBox);
+		
+		// Trail enable check box listener
+		this.trailEnableBox.selectedProperty().addListener(new ChangeListener<Boolean>(){
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldVal, Boolean newVal)
+			{
+				// if trail disabled, disable all trail menus, except this one and enable them, if trail is enabled
+				
+				trailColorPicker.setDisable(!newVal);
+				trailLengthSlider.setDisable(!newVal);
+				trailLengthBox.setDisable(!newVal);
+			}
+		});
+		
+		// Trail color label
+		this.trailColorLabel = new Label("Trail color:");
+		this.trailColorLabel.setLayoutX(5.0d);
+		this.trailColorLabel.setLayoutY(35.0d);
+		this.trailAnchor.getChildren().add(trailColorLabel);
+		
+		// Trail color picker
+		this.trailColorPicker = new ColorPicker();
+		this.trailColorPicker.setLayoutX(5.0d);
+		this.trailColorPicker.setLayoutY(55.0d);
+		this.trailAnchor.getChildren().add(trailColorPicker);
+		
+		// Trail length label
+		this.trailLengthLabel = new Label("Trail length");
+		this.trailLengthLabel.setLayoutX(85.0d);
+		this.trailLengthLabel.setLayoutY(100.0d);
+		this.trailAnchor.getChildren().add(trailLengthLabel);
+		
+		// Trail length slider
+		this.trailLengthSlider = new Slider();
+		this.trailLengthSlider.setMin(10);
+		this.trailLengthSlider.setMax(1000);
+		this.trailLengthSlider.setMajorTickUnit(500);
+		this.trailLengthSlider.setShowTickMarks(true);
+		this.trailLengthSlider.setShowTickLabels(true);
+		this.trailLengthSlider.setLayoutX(10.0d);
+		this.trailLengthSlider.setLayoutY(120.0d);
+		this.trailLengthSlider.setPrefWidth(210.0d);
+		this.trailAnchor.getChildren().add(trailLengthSlider);
+		
+		// Trail length box
+		this.trailLengthBox = new CheckBox("Infinite");
+		this.trailLengthBox.setLayoutX(230.0d);
+		this.trailLengthBox.setLayoutY(120.0d);
+		this.trailAnchor.getChildren().add(trailLengthBox);
 		
 		this.trailPane.setContent(trailAnchor);
 	}
@@ -100,13 +165,50 @@ public class EditToolPanel extends ToolPanel
 		this.infoItems[2].setValue(b.getPosition().toString());
 		this.infoItems[3].setValue(b.getVelocity().toString());
 		
+		// Disable or enable all trail menus accordingly
+		this.trailColorPicker.setDisable(!trailEnableBox.isSelected());
+		this.trailLengthSlider.setDisable(!trailEnableBox.isSelected());
+		this.trailLengthBox.setDisable(!trailEnableBox.isSelected());
+		
 		// Trail items
 		this.trailEnableBox.setSelected(b.isTrailShown());
+		
+		if(b.hasTrail() && !trailLengthBox.isDisabled())
+		{
+			this.trailColorPicker.setValue(b.getTrail().getColor());
+			
+			this.trailLengthBox.setSelected(b.getTrail().getLength() == -1);
+			if(b.getTrail().getLength() == -1)
+			{
+//				this.trailLengthSlider.setValue(10);
+				this.trailLengthSlider.setDisable(true);
+			}
+			else
+			{
+				this.trailLengthSlider.setValue(b.getTrail().getLength());
+				this.trailLengthSlider.setDisable(false);
+			}
+		}
 	}
 	
 	public CheckBox getTrailEnableBox()
 	{
 		return trailEnableBox;
+	}
+	
+	public ColorPicker getTrailColorPicker()
+	{
+		return trailColorPicker;
+	}
+	
+	public Slider getTrailLengthSlider()
+	{
+		return trailLengthSlider;
+	}
+	
+	public CheckBox getTrailLengthBox()
+	{
+		return trailLengthBox;
 	}
 	
 	private class ListItem extends HBox

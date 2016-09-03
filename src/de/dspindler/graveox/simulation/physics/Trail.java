@@ -57,6 +57,21 @@ public class Trail
 		this.color = color;
 	}
 	
+	public Color getColor()
+	{
+		return color;
+	}
+	
+	public void setLength(int length)
+	{
+		this.length = length;
+	}
+	
+	public int getLength()
+	{
+		return length;
+	}
+	
 	public void update(double deltaTime)
 	{
 		if(parent != null && show)
@@ -73,7 +88,7 @@ public class Trail
 				{
 					points.add(parent.getPosition().clone());
 					
-					if(length > 0 && points.size() > length)
+					while(length > 0 && points.size() > length)
 					{
 						points.remove(0);
 					}

@@ -1,7 +1,6 @@
 package de.dspindler.graveox.simulation.tools;
 
 import de.dspindler.graveox.simulation.physics.RigidBody;
-import de.dspindler.graveox.simulation.physics.Star;
 import de.dspindler.graveox.simulation.physics.Trail;
 import de.dspindler.graveox.util.Vector2;
 import javafx.beans.value.ChangeListener;
@@ -38,6 +37,8 @@ public class EditTool extends Tool
 		this.dragStartPosition = new Vector2();
 		
 		// Tool Panel listeners
+		
+		// Trail enable check box
 		((EditToolPanel) super.getPanel()).getTrailEnableBox().selectedProperty().addListener(new ChangeListener<Boolean>(){
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldVal, Boolean newVal)
@@ -50,6 +51,53 @@ public class EditTool extends Tool
 					}
 					selectedBody.getTrail().show(newVal);
 					((EditToolPanel) getPanel()).updateValues(selectedBody);
+				}
+			}
+		});
+		
+		// Trail color picker
+		((EditToolPanel) super.getPanel()).getTrailColorPicker().setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent e)
+			{
+				if(selectedBody != null)
+				{
+					if(selectedBody.hasTrail())
+					{
+						selectedBody.getTrail().setColor(((EditToolPanel) getPanel()).getTrailColorPicker().getValue());
+					}
+				}
+			}
+		});
+		
+		// Trail length slider
+		((EditToolPanel) super.getPanel()).getTrailLengthSlider().valueProperty().addListener(new ChangeListener<Number>(){
+			@Override
+			public void changed(ObservableValue<? extends Number> ov, Number oldVal, Number newVal)
+			{
+				if(selectedBody != null)
+				{
+					selectedBody.getTrail().setLength(newVal.intValue());
+				}
+			}
+		});
+		
+		// Trail length check box
+		((EditToolPanel) super.getPanel()).getTrailLengthBox().selectedProperty().addListener(new ChangeListener<Boolean>(){
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldVal, Boolean newVal)
+			{
+				if(selectedBody != null)
+				{
+					if(newVal)
+					{
+						// Length of -1 is infinite
+						selectedBody.getTrail().setLength(-1);
+					}
+					else
+					{
+						selectedBody.getTrail().setLength(10);
+					}
 				}
 			}
 		});
