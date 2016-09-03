@@ -51,7 +51,7 @@ public class Star extends RigidBody
 		{
 			// Temp
 			g.setFill(Color.rgb(255, 0, 0, 0.3d));
-			g.fillOval(position.x - r * 3.0d, position.y - r * 3.0d, r * 6.0d, r * 6.0d);
+			g.fillOval(position.x - r * 1.5d, position.y - r * 1.5d, r * 3.0d, r * 3.0d);
 			
 			// Draw black hole
 			g.setFill(Color.WHITE);

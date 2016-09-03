@@ -179,6 +179,7 @@ public class SimulationPresenter implements WindowListener
 			g.fillText("Time: " + model.getTime(), 2, 10);
 			g.fillText("Cam: " + model.getCamera().getPosition(), 2, 20);
 			g.fillText("Tracking: " + (model.getCamera().getTrackedBody() != null), 2, 30);
+//			g.fillText("Test: M\u2609", 2, 50);
 		}
 		
 		@Override

@@ -75,9 +75,15 @@ public abstract class Tool implements EventListener
 		g.strokeLine(x0, y, x0, y - 5.0d);
 		g.strokeLine(x1, y, x1, y - 5.0d);
 		
+		int decimals = 0;
+		if(power < -2)
+		{
+			decimals = 3;
+		}
+		
 		// Draw length text
 		g.setFill(Color.WHITE);
-		g.fillText(UnitUtil.toUnitString(100.0d * Math.pow(10.0d, power), 0) + "px", x1 + 15.0d, y);
+		g.fillText(UnitUtil.toUnitString(100.0d * Math.pow(10.0d, power), decimals) + "px", x1 + 15.0d, y);
 	}
 	
 	public abstract void update(double deltaTime);
