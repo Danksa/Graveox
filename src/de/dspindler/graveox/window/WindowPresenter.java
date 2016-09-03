@@ -41,6 +41,18 @@ public class WindowPresenter
 				}
 			}
 		});
+		this.view.getTimescaleSlider().valueProperty().addListener(new ChangeListener<Number>(){
+			@Override
+			public void changed(ObservableValue<? extends Number> ov, Number oldVal, Number newVal)
+			{
+				double val = Math.exp(newVal.doubleValue()) / (Math.exp(5.0d) / 5.0d);
+				
+				for(WindowListener l : listeners)
+				{
+					l.timescaleChanged(val);
+				}
+			}
+		});
 	}
 	
 	public void show()

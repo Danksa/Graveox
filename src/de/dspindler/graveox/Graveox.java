@@ -5,9 +5,6 @@ import de.dspindler.graveox.simulation.SimulationPresenter;
 import de.dspindler.graveox.simulation.tools.AddTool;
 import de.dspindler.graveox.simulation.tools.EditTool;
 import de.dspindler.graveox.simulation.tools.Tool;
-import de.dspindler.graveox.util.UnitUtil;
-import de.dspindler.graveox.window.WindowModel;
-import de.dspindler.graveox.window.WindowPresenter;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
