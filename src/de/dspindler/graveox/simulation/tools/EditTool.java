@@ -186,7 +186,26 @@ public class EditTool extends Tool
 	public void onKeyPressed(KeyEvent e){}
 
 	@Override
-	public void onKeyReleased(KeyEvent e){}
+	public void onKeyReleased(KeyEvent e)
+	{
+		switch(e.getCode())
+		{
+		case DELETE:
+		{
+			// remove selected body
+			if(selectedBody != null)
+			{
+				super.getSimulation().getModel().removeBody(selectedBody);
+			}
+			
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+	}
 
 	@Override
 	public void onKeyTyped(KeyEvent e){}
