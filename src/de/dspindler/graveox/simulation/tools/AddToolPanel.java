@@ -1,8 +1,6 @@
 package de.dspindler.graveox.simulation.tools;
 
 import de.dspindler.graveox.ui.ValueField;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
@@ -17,6 +15,8 @@ public class AddToolPanel extends ToolPanel
 	private AnchorPane			propertyAnchor;
 	private Label				propertyMassLabel;
 	private ValueField			propertyMassField;
+	private Label				propertyDensityLabel;
+	private ValueField			propertyDensityField;
 	
 	public AddToolPanel()
 	{
@@ -25,6 +25,7 @@ public class AddToolPanel extends ToolPanel
 		this.initPropertiesTab();
 		
 		this.tabs = new Accordion(propertyPane);
+		this.tabs.setExpandedPane(propertyPane);
 		super.setContent(tabs);
 	}
 	
@@ -48,15 +49,35 @@ public class AddToolPanel extends ToolPanel
 		this.propertyMassField.setPrefWidth(170.0d);
 		this.propertyAnchor.getChildren().add(propertyMassField);
 		
-		// Event listener
-		this.propertyMassField.addValueListener(new ChangeListener<Number>(){
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-			{
-				System.out.println("Got Value: " + newValue.doubleValue());
-			}
-		});
+		// Property density label
+		this.propertyDensityLabel = new Label("Density");
+		this.propertyDensityLabel.setLayoutX(5.0d);
+		this.propertyDensityLabel.setLayoutY(43.0d);
+		this.propertyAnchor.getChildren().add(propertyDensityLabel);
+		
+		// Property density field
+		this.propertyDensityField = new ValueField(false);
+		this.propertyDensityField.setLayoutX(50.0d);
+		this.propertyDensityField.setLayoutY(40.0d);
+		this.propertyDensityField.setPrefWidth(170.0d);
+		this.propertyAnchor.getChildren().add(propertyDensityField);
 		
 		this.propertyPane.setContent(propertyAnchor);
+	}
+	
+	public void updateValues(double mass, double density)
+	{
+		this.propertyMassField.setValue(mass);
+		this.propertyDensityField.setValue(density);
+	}
+	
+	public ValueField getMassPropertyField()
+	{
+		return propertyMassField;
+	}
+	
+	public ValueField getDensityPropertyField()
+	{
+		return propertyDensityField;
 	}
 }

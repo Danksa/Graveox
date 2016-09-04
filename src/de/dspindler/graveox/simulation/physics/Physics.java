@@ -60,7 +60,7 @@ public class Physics
 		
 		if(velN < 0)
 		{
-			double e = 0.5d;
+			double e = 0.8d;
 			double j = -(1.0d + e) * velN / (a.getInverseMass() + b.getInverseMass());
 			Vector2 impulse = normal.clone().scale(j / deltaTime);
 			b.applyForce(impulse);

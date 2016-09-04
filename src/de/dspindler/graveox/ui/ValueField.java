@@ -13,6 +13,8 @@ import javafx.scene.layout.AnchorPane;
 
 public class ValueField extends AnchorPane
 {
+	private static final char 						DECIMAL_SEPARATOR = new DecimalFormatSymbols(Locale.getDefault()).getDecimalSeparator();
+	
 	private ArrayList<ChangeListener<Number>>		listeners;
 	
 	private TextField			inputField;
@@ -36,8 +38,8 @@ public class ValueField extends AnchorPane
 		
 		this.inputUnitBox = new ComboBox<String>();
 		this.inputUnitBox.setMinWidth(70.0d);
-		this.inputUnitBox.getItems().add("kg");			// kilogram 
-		this.inputUnitBox.getItems().add("M\u2609");	// solar mass
+//		this.inputUnitBox.getItems().add("kg");			// kilogram
+//		this.inputUnitBox.getItems().add("M\u2609");	// solar mass
 		
 		AnchorPane.setLeftAnchor(inputUnitBox, inputField.getPrefWidth() + 10.0d);
 		AnchorPane.setTopAnchor(inputUnitBox, 0.0d);
@@ -49,6 +51,12 @@ public class ValueField extends AnchorPane
 		
 		super.getChildren().add(inputField);
 		super.getChildren().add(inputUnitBox);
+	}
+	
+	public void setValue(double value)
+	{
+		// replace "." with decimal separator
+		this.inputField.setText(Double.toString(value).replace('.', DECIMAL_SEPARATOR));
 	}
 	
 	public void addValueListener(ChangeListener<Number> listener)
@@ -66,13 +74,13 @@ public class ValueField extends AnchorPane
 		@Override
 		public void handle(ActionEvent e)
 		{
+			// Check if field is empty
 			if(inputField.getText() == null || inputField.getText().length() == 0)
 			{
 				inputField.setText("1");
 				return;
 			}
 			
-			char decimalSeparator = new DecimalFormatSymbols(Locale.getDefault()).getDecimalSeparator();
 			boolean valid = true;
 			int decimalSeparatorCount = 0;
 			byte[] b = inputField.getText().getBytes();
@@ -86,7 +94,7 @@ public class ValueField extends AnchorPane
 				}
 				
 				// Check for multiple decimal separators
-				if(b[i] == decimalSeparator)
+				if(b[i] == DECIMAL_SEPARATOR)
 				{
 					++decimalSeparatorCount;
 					
@@ -110,7 +118,7 @@ public class ValueField extends AnchorPane
 				String stringVal = inputField.getText();
 				
 				// Remove thousands separators
-				if(decimalSeparator == '.')
+				if(DECIMAL_SEPARATOR == '.')
 				{
 					stringVal = stringVal.replace(",", "");
 				}
@@ -120,10 +128,11 @@ public class ValueField extends AnchorPane
 				}
 				
 				// Replace decimal separator with ".", because Double.parseDouble() can't handle "," as separator
-				stringVal = stringVal.replace(decimalSeparator, '.');
+				stringVal = stringVal.replace(DECIMAL_SEPARATOR, '.');
 				
 				double val = Double.parseDouble(stringVal);
 				
+				// If input is 0, but 0 is not a valid input, set to 1
 				if(val == 0.0d && !allowZero)
 				{
 					val = 1.0d;

@@ -68,6 +68,11 @@ public class SimulationModel
 		this.bodies.add(body);
 	}
 	
+	public void removeBody(RigidBody body)
+	{
+		this.bodies.remove(body);
+	}
+	
 	public RigidBody getBody(int index)
 	{
 		return bodies.get(index);

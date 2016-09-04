@@ -111,7 +111,7 @@ public abstract class RigidBody
 	
 	public void applyImpulse(Vector2 impulse)
 	{
-		this.netForce.add(impulse.scale(mass));
+		this.netForce.add(impulse.clone().scale(mass));
 	}
 	
 	public void applyTorque(double torque)

@@ -5,6 +5,8 @@ import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Star;
 import de.dspindler.graveox.simulation.physics.Trail;
 import de.dspindler.graveox.util.Vector2;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -20,8 +22,11 @@ public class AddTool extends Tool
 	
 	private Vector2[]			predictorPoints;
 	
+	private Vector2				mousePos;
+	
 	// Planet properties
 	private double				mass;
+	private double				density;
 	private double				radius;
 	
 	public AddTool()
@@ -39,8 +44,42 @@ public class AddTool extends Tool
 			this.predictorPoints[i] = new Vector2();
 		}
 		
-		this.mass = 0.00001d;
-		this.radius = 5.0d;
+		this.mousePos = new Vector2();
+		
+		// mass = volume * density
+		// volume = mass / density
+		// volume = 4 / 3 * pi * radius^3
+		// radius = (3 * volume / (4 * pi))^(1/3)
+		
+		this.mass = 1000.0d;
+		this.density = 1.0d;
+		this.radius = Math.cbrt((3.0d * mass / density) / (4.0d * Math.PI));
+		
+		// Event listeners
+		((AddToolPanel) super.getPanel()).getMassPropertyField().addValueListener(new ChangeListener<Number>(){
+			@Override
+			public void changed(ObservableValue<? extends Number> ov, Number oldVal, Number newVal)
+			{
+				mass = newVal.doubleValue();
+				
+				// recalculate radius
+				radius = Math.cbrt((3.0d * mass / density) / (4.0d * Math.PI));
+			}
+		});
+		
+		((AddToolPanel) super.getPanel()).getDensityPropertyField().addValueListener(new ChangeListener<Number>(){
+			@Override
+			public void changed(ObservableValue<? extends Number> ov, Number oldVal, Number newVal)
+			{
+				density = newVal.doubleValue();
+				
+				// recalculate radius
+				radius = Math.cbrt((3.0d * mass / density) / (4.0d * Math.PI));
+			}
+		});
+		
+		// Update tool panel
+		((AddToolPanel) super.getPanel()).updateValues(mass, density);
 	}
 
 	private void calculatePredictor()
@@ -48,7 +87,13 @@ public class AddTool extends Tool
 		// Calculate predictor
 		double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
 		Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
-				
+		
+		// Add camera velocity, if tracking body
+		if(super.getSimulation().getModel().getCamera().getTrackedBody() != null)
+		{
+			velocity.subtract(super.getSimulation().getModel().getCamera().getTrackedBody().getVelocity());
+		}
+		
 		Star s = new Star(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition), velocity, mass, 0.0d, 0.0d, 1.0d, radius);
 		predictorPoints[0].set(dragStartPosition);
 		
@@ -56,7 +101,9 @@ public class AddTool extends Tool
 		Vector2 oldPos = new Vector2();
 		int pointIndex = 1;
 		Vector2 gravity;
-		double deltaTime = super.getSimulation().getModel().getTimeScale() / (60.0d * super.getSimulation().getModel().getSimulationSteps());
+//		double deltaTime = super.getSimulation().getModel().getTimeScale() / (60.0d * super.getSimulation().getModel().getSimulationSteps());
+		double deltaTime = 1.0d / 60.0d;
+		double time = 0.0d;
 		
 		while(pointIndex < predictorPoints.length)
 		{
@@ -92,6 +139,18 @@ public class AddTool extends Tool
 				distance = 0.0d;
 				predictorPoints[pointIndex++].set(super.getSimulation().getModel().getCamera().toCameraSpace(s.getPosition()));
 			}
+			
+			// Max calc time
+			if(time > 20.0d)
+			{
+				while(pointIndex < predictorPoints.length)
+				{
+					predictorPoints[pointIndex++].set(super.getSimulation().getModel().getCamera().toCameraSpace(s.getPosition()));
+				}
+				return;
+			}
+			
+			time += deltaTime;
 		}
 	}
 	
@@ -113,17 +172,28 @@ public class AddTool extends Tool
 		double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
 		Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
 		
+		// Add camera velocity, if tracking body
+		if(super.getSimulation().getModel().getCamera().getTrackedBody() != null)
+		{
+			velocity.subtract(super.getSimulation().getModel().getCamera().getTrackedBody().getVelocity());
+		}
+		
 		Star s = new Star(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition), velocity, mass, 0.0d, 0.0d, 1.0d, radius);
 		s.attachTrail(new Trail(200));
 		
 		super.getSimulation().getModel().addBody(s);
+		
+		this.mousePos.set(e.getX(), e.getY());
 	}
 
 	@Override
 	public void onMouseClicked(MouseEvent e){}
 
 	@Override
-	public void onMouseMoved(MouseEvent e){}
+	public void onMouseMoved(MouseEvent e)
+	{
+		this.mousePos.set(e.getX(), e.getY());
+	}
 
 	@Override
 	public void onMouseDragged(MouseEvent e)
@@ -176,6 +246,8 @@ public class AddTool extends Tool
 		// Draw length scale
 		super.drawLengthScale(g);
 		
+		double scale = super.getSimulation().getModel().getCamera().getScale();
+		
 		if(dragging)
 		{
 			// Draw shoot indicator
@@ -191,13 +263,19 @@ public class AddTool extends Tool
 			
 			// Draw body
 			g.setFill(Color.ORANGE);
-			g.fillOval(dragStartPosition.x - radius, dragStartPosition.y - radius, radius * 2.0d, radius * 2.0d);
+			g.fillOval(dragStartPosition.x - radius * scale, dragStartPosition.y - radius * scale, radius * 2.0d * scale, radius * 2.0d * scale);
 			
 			// Draw force strength
 			double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
 			
 			g.setFill(Color.WHITE);
-			g.fillText(String.format("Force: %.2f", force), dragStartPosition.x + radius, dragStartPosition.y - radius);
+			g.fillText(String.format("Force: %.2f", force), dragStartPosition.x + 5, dragStartPosition.y - 5);
+		}
+		else
+		{
+			// Draw body
+			g.setFill(Color.ORANGE);
+			g.fillOval(mousePos.x - radius * scale, mousePos.y - radius * scale, radius * 2.0d * scale, radius * 2.0d * scale);
 		}
 	}
 
