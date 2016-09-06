@@ -10,11 +10,33 @@ public class Physics
 	
 	public static void applyNewtonianGravity(RigidBody a, RigidBody b)
 	{
-		Vector2 force = getNewtonianGravity(a, b);
-		
-		a.applyForce(force);
-		force.invert();
-		b.applyForce(force);
+		if(a instanceof Particle && b instanceof Particle)
+		{
+			return;
+		}
+		else
+		{
+			Vector2 force = getNewtonianGravity(a, b);
+			
+			if(a instanceof Particle || b instanceof Particle)
+			{
+				if(a instanceof Particle)
+				{
+					a.applyForce(force);
+				}
+				if(b instanceof Particle)
+				{
+					force.invert();
+					b.applyForce(force);
+				}
+			}
+			else
+			{
+				a.applyForce(force);
+				force.invert();
+				b.applyForce(force);
+			}
+		}
 	}
 	
 	public static Vector2 getNewtonianGravity(RigidBody a, RigidBody b)
@@ -27,11 +49,33 @@ public class Physics
 	
 	public static void applyRelativisticGravity(RigidBody a, RigidBody b)
 	{
-		Vector2 force = getRelativisticGravity(a, b);
-		
-		a.applyForce(force);
-		force.invert();
-		b.applyForce(force);
+		if(a instanceof Particle && b instanceof Particle)
+		{
+			return;
+		}
+		else
+		{
+			Vector2 force = getRelativisticGravity(a, b);
+			
+			if(a instanceof Particle || b instanceof Particle)
+			{
+				if(a instanceof Particle)
+				{
+					a.applyForce(force);
+				}
+				if(b instanceof Particle)
+				{
+					force.invert();
+					b.applyForce(force);
+				}
+			}
+			else
+			{
+				a.applyForce(force);
+				force.invert();
+				b.applyForce(force);
+			}
+		}
 	}
 	
 	public static Vector2 getRelativisticGravity(RigidBody a, RigidBody b)
