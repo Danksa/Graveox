@@ -35,17 +35,13 @@ public class SimulationPresenter implements WindowListener
 		this.initEventHandlers();
 		
 		// Test bodies
-		/*Star body = new Star();
-		body.setPosition(new Vector2(0.0d, 0.0d));
-		body.setVelocity(new Vector2(0.0d, 0.0d));
-		body.setMass(10000000.0d);
-		body.setRadius(10.0d);
-		this.model.addBody(body);*/
+		Star body = new Star(new Vector2(0.0d, 0.0d), new Vector2(0.0d, 0.0d), 6000000.0d, 0.0d, 0.0d, 1.0d, 10.0d);
+		this.model.addBody(body);
 		
-		double minX = -500.0d;
-		double maxX = 500.0d;
-		double minY = -300.0d;
-		double maxY = 300.0d;
+		/*double minX = -5000.0d;
+		double maxX = 5000.0d;
+		double minY = -3000.0d;
+		double maxY = 3000.0d;
 		
 		double minVel = 0.0d;
 		double maxVel = 10.0d;
@@ -59,7 +55,7 @@ public class SimulationPresenter implements WindowListener
 		Vector2 pos = new Vector2();
 		Vector2 vel = new Vector2();
 		
-		for(int i = 0; i < 40; ++i)
+		for(int i = 0; i < 120; ++i)
 		{
 			pos.x = (minX + (maxX - minX) * Math.random());
 			pos.y = (minY + (maxY - minY) * Math.random());
@@ -70,7 +66,7 @@ public class SimulationPresenter implements WindowListener
 			radius = mass * 0.012d;
 			
 			this.model.addBody(new Star(pos, vel, mass, 0.0d, 0.0d, mass, radius));
-		}
+		}*/
 		
 		// Start simulation
 		this.timer.start();

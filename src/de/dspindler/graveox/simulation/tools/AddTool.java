@@ -1,5 +1,6 @@
 package de.dspindler.graveox.simulation.tools;
 
+import de.dspindler.graveox.simulation.physics.Particle;
 import de.dspindler.graveox.simulation.physics.Physics;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Star;
@@ -29,6 +30,10 @@ public class AddTool extends Tool
 	private double				density;
 	private double				radius;
 	
+	// Particle spawner
+	private boolean				spawnParticles;
+	private double				spawnTimer;
+	
 	public AddTool()
 	{
 		super("Add Tool", new AddToolPanel());
@@ -54,6 +59,9 @@ public class AddTool extends Tool
 		this.mass = 1000.0d;
 		this.density = 1.0d;
 		this.radius = Math.cbrt((3.0d * mass / density) / (4.0d * Math.PI));
+		
+		this.spawnParticles = false;
+		this.spawnTimer = 0.0d;
 		
 		// Event listeners
 		((AddToolPanel) super.getPanel()).getMassPropertyField().addValueListener(new ChangeListener<Number>(){
@@ -102,7 +110,7 @@ public class AddTool extends Tool
 		int pointIndex = 1;
 		Vector2 gravity;
 //		double deltaTime = super.getSimulation().getModel().getTimeScale() / (60.0d * super.getSimulation().getModel().getSimulationSteps());
-		double deltaTime = 1.0d / 60.0d;
+		double deltaTime = 1.0d / (60.0d * 1.0d);
 		double time = 0.0d;
 		
 		while(pointIndex < predictorPoints.length)
@@ -114,6 +122,11 @@ public class AddTool extends Tool
 			// Simulate body
 			for(RigidBody b : super.getSimulation().getModel().getBodies())
 			{
+				if(b instanceof Particle)
+				{
+					continue;
+				}
+				
 				gravity = Physics.getRelativisticGravity(s, b).scale(2.0d);
 //				gravity = Physics.getNewtonianGravity(s, b).scale(2.0d);
 				s.applyForce(gravity);
@@ -169,19 +182,22 @@ public class AddTool extends Tool
 		this.dragging = false;
 		
 		// Spawn body
-		double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
-		Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
-		
-		// Add camera velocity, if tracking body
-		if(super.getSimulation().getModel().getCamera().getTrackedBody() != null)
+		if(!spawnParticles)
 		{
-			velocity.subtract(super.getSimulation().getModel().getCamera().getTrackedBody().getVelocity());
+			double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
+			Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
+			
+			// Add camera velocity, if tracking body
+			if(super.getSimulation().getModel().getCamera().getTrackedBody() != null)
+			{
+				velocity.subtract(super.getSimulation().getModel().getCamera().getTrackedBody().getVelocity());
+			}
+			
+			Star s = new Star(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition), velocity, mass, 0.0d, 0.0d, 1.0d, radius);
+			s.attachTrail(new Trail(200));
+			
+			super.getSimulation().getModel().addBody(s);
 		}
-		
-		Star s = new Star(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition), velocity, mass, 0.0d, 0.0d, 1.0d, radius);
-		s.attachTrail(new Trail(200));
-		
-		super.getSimulation().getModel().addBody(s);
 		
 		this.mousePos.set(e.getX(), e.getY());
 	}
@@ -221,11 +237,38 @@ public class AddTool extends Tool
 	@Override
 	public void onKeyPressed(KeyEvent e)
 	{
-		
+		switch(e.getCode())
+		{
+		case SPACE:
+		{
+			this.spawnParticles = true;
+			
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
 	}
 
 	@Override
-	public void onKeyReleased(KeyEvent e){}
+	public void onKeyReleased(KeyEvent e)
+	{
+		switch(e.getCode())
+		{
+		case SPACE:
+		{
+			this.spawnParticles = false;
+			
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+	}
 
 	@Override
 	public void onKeyTyped(KeyEvent e){}
@@ -236,7 +279,28 @@ public class AddTool extends Tool
 		if(dragging)
 		{
 			// Recalculate predictor
-			this.calculatePredictor();
+			if(!spawnParticles)
+			{
+				this.calculatePredictor();
+			}
+			
+			if(spawnParticles && spawnTimer > 0.01d)
+			{
+				Particle p = new Particle();
+				p.setMass(mass);
+				p.setPosition(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition));
+				
+				double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
+				Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
+				
+				p.setVelocity(velocity);
+				
+				super.getSimulation().getModel().addBody(p);
+				
+				this.spawnTimer = 0.0d;
+			}
+			
+			this.spawnTimer += deltaTime;
 		}
 	}
 

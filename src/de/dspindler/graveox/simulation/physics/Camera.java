@@ -137,10 +137,10 @@ public class Camera
 		}
 		
 		// Move to target position
-		this.position.set(position.scale(1.0d - positionSmoothing).add(targetPosition.clone().scale(positionSmoothing)));
+		this.position.set(position.scale((1.0d - positionSmoothing)).add(targetPosition.clone().scale(positionSmoothing)));
 		
 		// Zoom zo scale
-		this.scale = (scale * (1.0d - zoomSmoothing)) + (targetScale * zoomSmoothing);
+		this.scale = (scale * ((1.0d - zoomSmoothing) )) + (targetScale * zoomSmoothing);
 	}
 	
 	public void applyTransform(GraphicsContext g)

@@ -1,5 +1,6 @@
 package de.dspindler.graveox.simulation.physics.collision;
 
+import de.dspindler.graveox.simulation.physics.Particle;
 import de.dspindler.graveox.simulation.physics.Physics;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.util.Vector2;
@@ -8,6 +9,11 @@ public class CollisionHandler
 {
 	public static void handleCollision(RigidBody a, RigidBody b, double deltaTime)
 	{
+		if((a instanceof Particle) || (b instanceof Particle))
+		{
+			return;
+		}
+		
 		if(a.getCollisionShape() instanceof CircleCollisionShape && b.getCollisionShape() instanceof CircleCollisionShape)
 		{
 			circleCircleCollision(a, b, deltaTime);
