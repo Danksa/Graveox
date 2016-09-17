@@ -6,10 +6,13 @@ import javafx.scene.paint.Color;
 
 public class Particle extends RigidBody
 {
-
+	private double			radius;
+	
 	public Particle()
 	{
 		super(new CircleCollisionShape(2.0d));
+		
+		this.radius = 4.0d;
 	}
 
 	@Override
@@ -22,6 +25,6 @@ public class Particle extends RigidBody
 	protected void onRender(GraphicsContext g)
 	{
 		g.setFill(Color.GRAY);
-		g.fillOval(position.x - 2.0d, position.y - 2.0d, 4.0d, 4.0d);
+		g.fillOval(position.x - radius, position.y - radius, radius * 2.0d, radius * 2.0d);
 	}
 }

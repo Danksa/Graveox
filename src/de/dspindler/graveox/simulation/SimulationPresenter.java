@@ -1,5 +1,6 @@
 package de.dspindler.graveox.simulation;
 
+import de.dspindler.graveox.simulation.physics.Particle;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Star;
 import de.dspindler.graveox.simulation.physics.optimization.GravityHandler;
@@ -23,6 +24,10 @@ public class SimulationPresenter implements WindowListener
 	
 	// test
 	private double					gravTime = 0.0d;
+	private int						fps = 0;
+	private long					fpsTime = System.currentTimeMillis();
+	private int						lastFps = 0;
+	private double					renderTime = 0.0d;
 	
 	public SimulationPresenter(SimulationModel model)
 	{
@@ -39,12 +44,12 @@ public class SimulationPresenter implements WindowListener
 		this.initEventHandlers();
 		
 		// Test bodies
-		int numBodies = 1400;
-		double minRadius = 300.0d;
-		double maxRadius = 1500.0d;
+		int numBodies = 80000;
+		double minRadius = 400.0d;
+		double maxRadius = 3000.0d;
 		
-		double minVel = 150.0d;
-		double maxVel = 400.0d;
+		double minVel = 50.0d;
+		double maxVel = 100.0d;
 		
 		double minMass = 10.0d;
 		double maxMass = 100.0d;
@@ -62,7 +67,7 @@ public class SimulationPresenter implements WindowListener
 			r = minRadius + (maxRadius - minRadius) * Math.random();
 			v = minVel + (maxVel - minVel) * Math.random();
 			
-			v = v * (1.1d - r / maxRadius);
+//			v = v * (1.1d - r / maxRadius);
 			
 //			dir = Math.signum(Math.random() - 0.5d);
 			dir = 1;
@@ -71,12 +76,19 @@ public class SimulationPresenter implements WindowListener
 			pos.setPolar(r, a);
 			vel.setPolar(v, a + Math.PI * 0.5d * dir);
 			
-			rb = new Star();
+			if(false)
+			{
+				rb = new Star();
+				((Star) rb).setRadius(m * scale);
+			}
+			else
+			{
+				rb = new Particle();
+			}
 			rb.setPosition(pos);
 			rb.setVelocity(vel);
 			rb.setMass(m);
 //			rb.attachTrail(new Trail(1000));
-			((Star) rb).setRadius(m * scale);
 			
 			this.addBody(rb);
 		}
@@ -222,23 +234,16 @@ public class SimulationPresenter implements WindowListener
 			model.getSelectedTool().update(deltaTime);
 			
 			// Temporary boundaries
-			/*for(int i = 0; i < model.getBodyCount(); ++i)
+			for(int i = 0; i < model.getBodyCount(); ++i)
 			{
-				if(model.getBody(i).getPosition().x < -100000.0d || model.getBody(i).getPosition().x > 100000.0d)
+				if(Vector2.getDistanceSquared(model.getBody(i).getPosition(), new Vector2()) > 3000.0d * 3000.0d)
 				{
 					model.removeBody(model.getBody(i));
 					--i;
-					System.out.println("Boundary");
+//					System.out.println("Boundary");
 					continue;
 				}
-				if(model.getBody(i).getPosition().y < -100000.0d || model.getBody(i).getPosition().y > 100000.0d)
-				{
-					model.removeBody(model.getBody(i));
-					--i;
-					System.out.println("Boundary");
-					continue;
-				}
-			}*/
+			}
 			
 			// Udpate trails
 			for(RigidBody b : model.getBodies())
@@ -257,15 +262,21 @@ public class SimulationPresenter implements WindowListener
 			gravHandler.update(deltaTime);
 			// temporary
 			gravTime = (System.nanoTime() - time) / 1000000.0d;
+			if(System.currentTimeMillis() - fpsTime > 1000)
+			{
+				lastFps = fps;
+				fps = 0;
+				fpsTime += 1000;
+			}
 			
 			// Collision
-			for(int i = 0; i < model.getBodyCount(); ++i)
+			/*for(int i = 0; i < model.getBodyCount(); ++i)
 			{
 				for(int j = i + 1; j < model.getBodyCount(); ++j)
 				{
-//					CollisionHandler.handleCollision(getModel().getBodies().get(i), getModel().getBodies().get(j), deltaTime);
+					CollisionHandler.handleCollision(getModel().getBodies().get(i), getModel().getBodies().get(j), deltaTime);
 				}
-			}
+			}*/
 			
 			// Update velocities
 			for(RigidBody b : model.getBodies())
@@ -314,6 +325,12 @@ public class SimulationPresenter implements WindowListener
 			g.fillText("Tracking: " + (model.getCamera().getTrackedBody() != null), 2, 30);
 			g.fillText("Bodies: " + model.getBodyCount(), 2, 50);
 			g.fillText("GravTime: " + gravTime + "ms [x" + model.getSimulationSteps() + "]", 2, 70);
+			g.fillText("FPS: " + lastFps, 2, 90);
+			g.fillText("RenderTime: " + renderTime + "ms", 2, 110);
+			g.fillText("TimeSum: " + (gravTime + renderTime) + "ms", 2, 130);
+			
+			// temp
+			++fps;
 		}
 		
 		@Override
@@ -327,8 +344,10 @@ public class SimulationPresenter implements WindowListener
 				model.advanceTime(deltaTime);
 			}
 			
+			long time = System.nanoTime();
 			view.clear();
 			render(view.getGraphicsContext2D());
+			renderTime = (System.nanoTime() - time) / 1000000.0d;
 		}	
 	}
 }
