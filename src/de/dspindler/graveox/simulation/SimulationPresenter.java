@@ -1,9 +1,8 @@
 package de.dspindler.graveox.simulation;
 
-import de.dspindler.graveox.simulation.physics.Physics;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.simulation.physics.Star;
-import de.dspindler.graveox.simulation.physics.collision.CollisionHandler;
+import de.dspindler.graveox.simulation.physics.optimization.GravityHandler;
 import de.dspindler.graveox.util.Vector2;
 import de.dspindler.graveox.window.WindowListener;
 import de.dspindler.graveox.window.WindowModel;
@@ -20,6 +19,10 @@ public class SimulationPresenter implements WindowListener
 	private SimulationHandler		handler;
 	private WindowPresenter			window;
 	private SimulationTimer			timer;
+	private GravityHandler			gravHandler;
+	
+	// test
+	private double					gravTime = 0.0d;
 	
 	public SimulationPresenter(SimulationModel model)
 	{
@@ -28,6 +31,7 @@ public class SimulationPresenter implements WindowListener
 		this.view = new SimulationView();
 		this.handler = new SimulationHandler();
 		this.timer = new SimulationTimer();
+		this.gravHandler = new GravityHandler(model);
 		
 		// Add tool as event listener
 		this.handler.addListener(model.getSelectedTool());
@@ -35,13 +39,62 @@ public class SimulationPresenter implements WindowListener
 		this.initEventHandlers();
 		
 		// Test bodies
-		Star body = new Star(new Vector2(0.0d, 0.0d), new Vector2(0.0d, 0.0d), 6000000.0d, 0.0d, 0.0d, 1.0d, 10.0d);
-		this.model.addBody(body);
+		int numBodies = 1400;
+		double minRadius = 300.0d;
+		double maxRadius = 1500.0d;
+		
+		double minVel = 150.0d;
+		double maxVel = 400.0d;
+		
+		double minMass = 10.0d;
+		double maxMass = 100.0d;
+		
+		double scale = 0.1d;
+		
+		double r, v, a, dir, m;
+		Vector2 pos = new Vector2();
+		Vector2 vel = new Vector2();
+		RigidBody rb;
+		
+		for(int i = 0; i < numBodies; ++i)
+		{
+			a = 2.0d * Math.PI * Math.random();
+			r = minRadius + (maxRadius - minRadius) * Math.random();
+			v = minVel + (maxVel - minVel) * Math.random();
+			
+			v = v * (1.1d - r / maxRadius);
+			
+//			dir = Math.signum(Math.random() - 0.5d);
+			dir = 1;
+			m = minMass + (maxMass - minMass) * Math.random();
+			
+			pos.setPolar(r, a);
+			vel.setPolar(v, a + Math.PI * 0.5d * dir);
+			
+			rb = new Star();
+			rb.setPosition(pos);
+			rb.setVelocity(vel);
+			rb.setMass(m);
+//			rb.attachTrail(new Trail(1000));
+			((Star) rb).setRadius(m * scale);
+			
+			this.addBody(rb);
+		}
+		
+		rb = new Star();
+		rb.setPosition(new Vector2());
+		rb.setVelocity(new Vector2());
+		rb.setMass(10000000.0d);
+		((Star) rb).setRadius(10.0d);
+		this.addBody(rb);
 		
 		/*double minX = -5000.0d;
 		double maxX = 5000.0d;
-		double minY = -3000.0d;
-		double maxY = 3000.0d;
+		double minY = -5000.0d;
+		double maxY = 5000.0d;
+		
+		double minR = 500.0d;
+		double maxR = 5000.0d;
 		
 		double minVel = 0.0d;
 		double maxVel = 10.0d;
@@ -51,22 +104,30 @@ public class SimulationPresenter implements WindowListener
 		double mass;
 		
 		double radius = 12.0d;
+		double r, a;
 		
 		Vector2 pos = new Vector2();
 		Vector2 vel = new Vector2();
 		
-		for(int i = 0; i < 120; ++i)
+		for(int i = 0; i < 100; ++i)
 		{
-			pos.x = (minX + (maxX - minX) * Math.random());
-			pos.y = (minY + (maxY - minY) * Math.random());
+//			pos.x = (minX + (maxX - minX) * Math.random());
+//			pos.y = (minY + (maxY - minY) * Math.random());
+			r = minR + (maxR - minR) * Math.random();
+			a = Math.random();
+			pos.x = Math.cos(2.0d * Math.PI * a) * r;
+			pos.y = Math.sin(2.0d * Math.PI * a) * r;
 			
 			vel.setPolar(minVel + (maxVel - minVel) * Math.random(), 2.0d * Math.PI * Math.random());
 			
 			mass = (minMass + (maxMass - minMass) * Math.random());
 			radius = mass * 0.012d;
 			
-			this.model.addBody(new Star(pos, vel, mass, 0.0d, 0.0d, mass, radius));
+			this.addBody(new Star(pos, vel, mass, 0.0d, 0.0d, mass, radius));
 		}*/
+		
+		// Temporary fix, execute update for gravity handler once
+//		this.gravHandler.update(1.0d);
 		
 		// Start simulation
 		this.timer.start();
@@ -97,6 +158,16 @@ public class SimulationPresenter implements WindowListener
 		this.window.show();
 		
 		this.toolSelected(0);
+	}
+	
+	public void addBody(RigidBody b)
+	{
+		this.model.addBody(b);
+	}
+	
+	public void removeBody(RigidBody b)
+	{
+		this.model.removeBody(b);
 	}
 	
 	public SimulationModel getModel()
@@ -150,6 +221,25 @@ public class SimulationPresenter implements WindowListener
 			// Update tool
 			model.getSelectedTool().update(deltaTime);
 			
+			// Temporary boundaries
+			/*for(int i = 0; i < model.getBodyCount(); ++i)
+			{
+				if(model.getBody(i).getPosition().x < -100000.0d || model.getBody(i).getPosition().x > 100000.0d)
+				{
+					model.removeBody(model.getBody(i));
+					--i;
+					System.out.println("Boundary");
+					continue;
+				}
+				if(model.getBody(i).getPosition().y < -100000.0d || model.getBody(i).getPosition().y > 100000.0d)
+				{
+					model.removeBody(model.getBody(i));
+					--i;
+					System.out.println("Boundary");
+					continue;
+				}
+			}*/
+			
 			// Udpate trails
 			for(RigidBody b : model.getBodies())
 			{
@@ -162,25 +252,18 @@ public class SimulationPresenter implements WindowListener
 				b.preUpdate(deltaTime);
 			}
 			
-			// Apply forces here
-			for(RigidBody a : model.getBodies())
-			{
-				for(RigidBody b : model.getBodies())
-				{
-					if(a != b)
-					{
-						Physics.applyRelativisticGravity(a, b);
-//						Physics.applyNewtonianGravity(a, b);
-					}
-				}
-			}
+			// Update gravity handler
+			long time = System.nanoTime();
+			gravHandler.update(deltaTime);
+			// temporary
+			gravTime = (System.nanoTime() - time) / 1000000.0d;
 			
 			// Collision
 			for(int i = 0; i < model.getBodyCount(); ++i)
 			{
 				for(int j = i + 1; j < model.getBodyCount(); ++j)
 				{
-					CollisionHandler.handleCollision(getModel().getBodies().get(i), getModel().getBodies().get(j), deltaTime);
+//					CollisionHandler.handleCollision(getModel().getBodies().get(i), getModel().getBodies().get(j), deltaTime);
 				}
 			}
 			
@@ -215,6 +298,9 @@ public class SimulationPresenter implements WindowListener
 				b.render(g);
 			}
 			
+			// Render gravity handler
+			gravHandler.render(g);
+			
 			// Restore transform previous to camera transform
 			g.restore();
 			
@@ -226,6 +312,8 @@ public class SimulationPresenter implements WindowListener
 			g.fillText(String.format("Time: %.2f     Scale: %.2f", model.getTime(), model.getTimeScale()), 2, 10);
 			g.fillText("Cam: " + model.getCamera().getPosition(), 2, 20);
 			g.fillText("Tracking: " + (model.getCamera().getTrackedBody() != null), 2, 30);
+			g.fillText("Bodies: " + model.getBodyCount(), 2, 50);
+			g.fillText("GravTime: " + gravTime + "ms [x" + model.getSimulationSteps() + "]", 2, 70);
 		}
 		
 		@Override

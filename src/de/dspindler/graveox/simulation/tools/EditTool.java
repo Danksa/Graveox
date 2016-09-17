@@ -195,7 +195,7 @@ public class EditTool extends Tool
 			// remove selected body
 			if(selectedBody != null)
 			{
-				super.getSimulation().getModel().removeBody(selectedBody);
+				super.getSimulation().removeBody(selectedBody);
 			}
 			
 			break;

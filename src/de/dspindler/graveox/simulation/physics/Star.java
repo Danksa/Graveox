@@ -34,6 +34,7 @@ public class Star extends RigidBody
 	{
 		((CircleCollisionShape) this.getCollisionShape()).setRadius(radius);
 		this.radius = radius;
+		this.schwarzRadius = 2.0d * Physics.GRAVITATIONAL_CONSTANT * mass / Physics.LIGHT_SPEED_SQUARED;
 	}
 	
 	@Override
@@ -52,8 +53,8 @@ public class Star extends RigidBody
 		if(schwarzRadius > radius)
 		{
 			// Draw photon sphere
-			g.setFill(Color.rgb(255, 0, 0, 0.3d));
-			g.fillOval(position.x - schwarzRadius * 1.5d, position.y - schwarzRadius * 1.5d, schwarzRadius * 3.0d, schwarzRadius * 3.0d);
+//			g.setFill(Color.rgb(255, 0, 0, 0.3d));
+//			g.fillOval(position.x - schwarzRadius * 1.5d, position.y - schwarzRadius * 1.5d, schwarzRadius * 3.0d, schwarzRadius * 3.0d);
 			
 			// Draw black hole
 			g.setFill(Color.WHITE);

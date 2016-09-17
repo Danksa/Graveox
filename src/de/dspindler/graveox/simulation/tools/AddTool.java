@@ -127,8 +127,8 @@ public class AddTool extends Tool
 					continue;
 				}
 				
-				gravity = Physics.getRelativisticGravity(s, b).scale(2.0d);
-//				gravity = Physics.getNewtonianGravity(s, b).scale(2.0d);
+				gravity = Physics.getRelativisticGravity(s, b);
+//				gravity = Physics.getNewtonianGravity(s, b);
 				s.applyForce(gravity);
 				
 				// check if inside the photon sphere, if so, there is no need to further calculate
@@ -196,7 +196,7 @@ public class AddTool extends Tool
 			Star s = new Star(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition), velocity, mass, 0.0d, 0.0d, 1.0d, radius);
 			s.attachTrail(new Trail(200));
 			
-			super.getSimulation().getModel().addBody(s);
+			super.getSimulation().addBody(s);
 		}
 		
 		this.mousePos.set(e.getX(), e.getY());
@@ -295,7 +295,7 @@ public class AddTool extends Tool
 				
 				p.setVelocity(velocity);
 				
-				super.getSimulation().getModel().addBody(p);
+				super.getSimulation().addBody(p);
 				
 				this.spawnTimer = 0.0d;
 			}
