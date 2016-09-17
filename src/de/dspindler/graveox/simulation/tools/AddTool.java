@@ -122,23 +122,21 @@ public class AddTool extends Tool
 			// Simulate body
 			for(RigidBody b : super.getSimulation().getModel().getBodies())
 			{
-				if(b instanceof Particle)
+				if(!(b instanceof Particle))
 				{
-					continue;
-				}
-				
-				gravity = Physics.getRelativisticGravity(s, b);
-//				gravity = Physics.getNewtonianGravity(s, b);
-				s.applyForce(gravity);
-				
-				// check if inside the photon sphere, if so, there is no need to further calculate
-				if(Vector2.getDistance(b.getPosition(), s.getPosition()) <= (3.0d * Physics.GRAVITATIONAL_CONSTANT * b.getMass() / Physics.LIGHT_SPEED_SQUARED))
-				{
-					for(int j = pointIndex; j < predictorPoints.length; ++j)
+					gravity = Physics.getRelativisticGravity(s, b);
+//					gravity = Physics.getNewtonianGravity(s, b);
+					s.applyForce(gravity);
+					
+					// check if inside the photon sphere, if so, there is no need to further calculate
+					if(Vector2.getDistance(b.getPosition(), s.getPosition()) <= (3.0d * Physics.GRAVITATIONAL_CONSTANT * b.getMass() / Physics.LIGHT_SPEED_SQUARED))
 					{
-						predictorPoints[pointIndex++].set(super.getSimulation().getModel().getCamera().toCameraSpace(s.getPosition()));
+						for(int j = pointIndex; j < predictorPoints.length; ++j)
+						{
+							predictorPoints[pointIndex++].set(super.getSimulation().getModel().getCamera().toCameraSpace(s.getPosition()));
+						}
+						return;
 					}
-					return;
 				}
 			}
 			

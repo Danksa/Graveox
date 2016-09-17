@@ -3,6 +3,7 @@ package de.dspindler.graveox.simulation.physics.optimization;
 import java.util.ArrayList;
 
 import de.dspindler.graveox.simulation.physics.FakeBody;
+import de.dspindler.graveox.simulation.physics.Particle;
 import de.dspindler.graveox.simulation.physics.Physics;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.util.Vector2;
@@ -11,7 +12,7 @@ import javafx.scene.paint.Color;
 
 public class TreeNode
 {
-	private static final double		THETA = 0.9d;
+	private static final double		THETA = 0.8d;
 	
 	private Vector2					massCenter;
 	private double					massSum;
@@ -58,7 +59,10 @@ public class TreeNode
 		{
 			if(bodies.get(0) != b)
 			{
-				force.add(Physics.getRelativisticGravity(b, bodies.get(0)));
+				if(!(bodies.get(0) instanceof Particle))
+				{
+					force.add(Physics.getRelativisticGravity(b, bodies.get(0)));
+				}
 			}
 		}
 		else
@@ -168,11 +172,11 @@ public class TreeNode
 	}
 	
 	public void updateBodies(ArrayList<RigidBody> bodies)
-	{
+	{		
 		this.bodies.clear();
 		for(RigidBody b : bodies)
 		{
-			if(isInside(b))
+			if(isInside(b) && !(b instanceof Particle))
 			{
 				this.bodies.add(b);
 			}
@@ -182,8 +186,11 @@ public class TreeNode
 		this.massCenter.zero();
 		for(RigidBody b : this.bodies)
 		{
-			this.massSum += b.getMass();
-			this.massCenter.add(b.getPosition().clone().scale(b.getMass()));
+			if(!(b instanceof Particle))
+			{
+				this.massSum += b.getMass();
+				this.massCenter.add(b.getPosition().clone().scale(b.getMass()));
+			}
 		}
 		this.massCenter.scale(1.0d / massSum);
 		

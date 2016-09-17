@@ -1,6 +1,7 @@
 package de.dspindler.graveox.simulation.physics.optimization;
 
 import de.dspindler.graveox.simulation.SimulationModel;
+import de.dspindler.graveox.simulation.physics.Particle;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.util.Vector2;
 import javafx.scene.canvas.GraphicsContext;
@@ -33,11 +34,14 @@ public class GravityHandler
 		// Find min and max
 		for(RigidBody b : model.getBodies())
 		{
-			this.min.x = Math.min(min.x, b.getPosition().x);
-			this.min.y = Math.min(min.y, b.getPosition().y);
-			
-			this.max.x = Math.max(max.x, b.getPosition().x);
-			this.max.y = Math.max(max.y, b.getPosition().y);
+			if(!(b instanceof Particle))
+			{
+				this.min.x = Math.min(min.x, b.getPosition().x);
+				this.min.y = Math.min(min.y, b.getPosition().y);
+				
+				this.max.x = Math.max(max.x, b.getPosition().x);
+				this.max.y = Math.max(max.y, b.getPosition().y);
+			}
 		}
 		
 		// Make square
