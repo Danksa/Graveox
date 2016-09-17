@@ -18,6 +18,7 @@ public class ValueField extends AnchorPane
 	private ArrayList<ChangeListener<Number>>		listeners;
 	
 	private TextField			inputField;
+	private ComboBox<String>	inputPrefixBox;
 	private ComboBox<String>	inputUnitBox;
 	private boolean				allowZero;
 	
@@ -34,23 +35,36 @@ public class ValueField extends AnchorPane
 		AnchorPane.setLeftAnchor(inputField, 0.0d);
 		AnchorPane.setTopAnchor(inputField, 0.0d);
 		AnchorPane.setBottomAnchor(inputField, 0.0d);
-		AnchorPane.setRightAnchor(inputField, 70.0d);
+		AnchorPane.setRightAnchor(inputField, 70.0d + 54.0d);
 		
 		this.inputUnitBox = new ComboBox<String>();
 		this.inputUnitBox.setMinWidth(70.0d);
-//		this.inputUnitBox.getItems().add("kg");			// kilogram
-//		this.inputUnitBox.getItems().add("M\u2609");	// solar mass
+		this.inputUnitBox.setPrefWidth(70.0d);
+		this.inputUnitBox.setMaxWidth(70.0d);
+		this.inputUnitBox.getItems().add("g");			// kilogram
+		this.inputUnitBox.getItems().add("M\u2609");	// solar mass
 		
-		AnchorPane.setLeftAnchor(inputUnitBox, inputField.getPrefWidth() + 10.0d);
 		AnchorPane.setTopAnchor(inputUnitBox, 0.0d);
 		AnchorPane.setBottomAnchor(inputUnitBox, 0.0d);
 		AnchorPane.setRightAnchor(inputUnitBox, 0.0d);
+		
+		this.inputPrefixBox = new ComboBox<String>();
+		this.inputPrefixBox.setMinWidth(54.0d);
+		this.inputPrefixBox.setPrefWidth(54.0d);
+		this.inputPrefixBox.setMaxWidth(54.0d);
+		this.inputPrefixBox.getItems().add("k");	// kilo
+		this.inputPrefixBox.getItems().add("M");	// mega
+		
+		AnchorPane.setTopAnchor(inputPrefixBox, 0.0d);
+		AnchorPane.setBottomAnchor(inputPrefixBox, 0.0d);
+		AnchorPane.setRightAnchor(inputPrefixBox, inputUnitBox.getMinWidth());
 		
 		// Whether or not the number "0" is a valid input
 		this.allowZero = allowZero;
 		
 		super.getChildren().add(inputField);
 		super.getChildren().add(inputUnitBox);
+		super.getChildren().add(inputPrefixBox);
 	}
 	
 	public void setValue(double value)

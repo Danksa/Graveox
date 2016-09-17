@@ -51,6 +51,7 @@ public class EditToolPanel extends ToolPanel
 		initTrailTab();
 		
 		this.tabs = new Accordion(infoPane, trailPane);
+		this.tabs.setExpandedPane(infoPane);
 		super.setContent(tabs);
 		
 		this.updateValues(null);
