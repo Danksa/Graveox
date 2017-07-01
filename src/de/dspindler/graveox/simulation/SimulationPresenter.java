@@ -43,6 +43,104 @@ public class SimulationPresenter implements WindowListener
 		
 		this.initEventHandlers();
 		
+<<<<<<< HEAD
+=======
+		// Test bodies
+		int numBodies = 80000;
+		double minRadius = 400.0d;
+		double maxRadius = 3000.0d;
+		
+		double minVel = 50.0d;
+		double maxVel = 100.0d;
+		
+		double minMass = 10.0d;
+		double maxMass = 100.0d;
+		
+		double scale = 0.1d;
+		
+		double r, v, a, dir, m;
+		Vector2 pos = new Vector2();
+		Vector2 vel = new Vector2();
+		RigidBody rb;
+		
+		for(int i = 0; i < numBodies; ++i)
+		{
+			a = 2.0d * Math.PI * Math.random();
+			r = minRadius + (maxRadius - minRadius) * Math.random();
+			v = minVel + (maxVel - minVel) * Math.random();
+			
+//			v = v * (1.1d - r / maxRadius);
+			
+//			dir = Math.signum(Math.random() - 0.5d);
+			dir = 1;
+			m = minMass + (maxMass - minMass) * Math.random();
+			
+			pos.setPolar(r, a);
+			vel.setPolar(v, a + Math.PI * 0.5d * dir);
+			
+			if(false)
+			{
+				rb = new Star();
+				((Star) rb).setRadius(m * scale);
+			}
+			else
+			{
+				rb = new Particle();
+			}
+			rb.setPosition(pos);
+			rb.setVelocity(vel);
+			rb.setMass(m);
+//			rb.attachTrail(new Trail(1000));
+			
+			this.addBody(rb);
+		}
+		
+		rb = new Star();
+		rb.setPosition(new Vector2());
+		rb.setVelocity(new Vector2());
+		rb.setMass(10000000.0d);
+		((Star) rb).setRadius(10.0d);
+		this.addBody(rb);
+		
+		/*double minX = -5000.0d;
+		double maxX = 5000.0d;
+		double minY = -5000.0d;
+		double maxY = 5000.0d;
+		
+		double minR = 500.0d;
+		double maxR = 5000.0d;
+		
+		double minVel = 0.0d;
+		double maxVel = 10.0d;
+		
+		double minMass = 10.0d;
+		double maxMass = 1000.0d;
+		double mass;
+		
+		double radius = 12.0d;
+		double r, a;
+		
+		Vector2 pos = new Vector2();
+		Vector2 vel = new Vector2();
+		
+		for(int i = 0; i < 100; ++i)
+		{
+//			pos.x = (minX + (maxX - minX) * Math.random());
+//			pos.y = (minY + (maxY - minY) * Math.random());
+			r = minR + (maxR - minR) * Math.random();
+			a = Math.random();
+			pos.x = Math.cos(2.0d * Math.PI * a) * r;
+			pos.y = Math.sin(2.0d * Math.PI * a) * r;
+			
+			vel.setPolar(minVel + (maxVel - minVel) * Math.random(), 2.0d * Math.PI * Math.random());
+			
+			mass = (minMass + (maxMass - minMass) * Math.random());
+			radius = mass * 0.012d;
+			
+			this.addBody(new Star(pos, vel, mass, 0.0d, 0.0d, mass, radius));
+		}*/
+		
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		// Temporary fix, execute update for gravity handler once
 //		this.gravHandler.update(1.0d);
 		
@@ -75,6 +173,7 @@ public class SimulationPresenter implements WindowListener
 		this.window.show();
 		
 		this.toolSelected(0);
+<<<<<<< HEAD
 		
 		// Test
 		RigidBody rb = new Star();
@@ -86,6 +185,8 @@ public class SimulationPresenter implements WindowListener
 		this.addBody(rb);
 		
 		model.getCamera().setTrackedBody(rb);
+=======
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 	}
 	
 	public void addBody(RigidBody b)
@@ -146,6 +247,7 @@ public class SimulationPresenter implements WindowListener
 		
 		private void update(double deltaTime)
 		{
+<<<<<<< HEAD
 			// Remove bodies which are marked as such
 			model.removeBodies();
 			
@@ -155,17 +257,42 @@ public class SimulationPresenter implements WindowListener
 			// Update tool
 			model.getSelectedTool().update(deltaTime);
 			
+=======
+			// Update tool
+			model.getSelectedTool().update(deltaTime);
+			
+			// Temporary boundaries
+			for(int i = 0; i < model.getBodyCount(); ++i)
+			{
+				if(Vector2.getDistanceSquared(model.getBody(i).getPosition(), new Vector2()) > 3000.0d * 3000.0d)
+				{
+					model.removeBody(model.getBody(i));
+					--i;
+//					System.out.println("Boundary");
+					continue;
+				}
+			}
+			
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 			// Udpate trails
 			for(RigidBody b : model.getBodies())
 			{
 				b.updateTrail(deltaTime);
 			}
 			
+<<<<<<< HEAD
 			// Pre-update (currently unnecessary
 //			for(RigidBody b : model.getBodies())
 //			{
 //				b.preUpdate(deltaTime);
 //			}
+=======
+			// Update positions
+			for(RigidBody b : model.getBodies())
+			{
+				b.preUpdate(deltaTime);
+			}
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 			
 			// Update gravity handler
 			long time = System.nanoTime();
@@ -180,6 +307,7 @@ public class SimulationPresenter implements WindowListener
 			}
 			
 			// Collision
+<<<<<<< HEAD
 			for(int i = 0; i < model.getBodyCount(); ++i)
 			{
 				for(int j = i + 1; j < model.getBodyCount(); ++j)
@@ -233,6 +361,20 @@ public class SimulationPresenter implements WindowListener
 				{
 					b.update(deltaTime);
 				}
+=======
+			/*for(int i = 0; i < model.getBodyCount(); ++i)
+			{
+				for(int j = i + 1; j < model.getBodyCount(); ++j)
+				{
+					CollisionHandler.handleCollision(getModel().getBodies().get(i), getModel().getBodies().get(j), deltaTime);
+				}
+			}*/
+			
+			// Update velocities
+			for(RigidBody b : model.getBodies())
+			{
+				b.update(deltaTime);
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 			}
 			
 			// Update camera

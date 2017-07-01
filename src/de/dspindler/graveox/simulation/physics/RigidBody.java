@@ -9,11 +9,17 @@ public abstract class RigidBody
 	// Linear motion properties
 	protected Vector2			position;
 	protected Vector2			velocity;
+<<<<<<< HEAD
 //	private Vector2				acceleration;
 	protected double			mass;
 	
 	private Vector2				momentum;
 	
+=======
+	private Vector2				acceleration;
+	protected double			mass;
+	
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 	// Rotational motion properties
 	protected double			angle;
 	protected double			angularVelocity;
@@ -32,19 +38,28 @@ public abstract class RigidBody
 	private Vector2				netForce;
 	private double				netTorque;
 	
+<<<<<<< HEAD
 	private boolean				stationary;
 	
 	private boolean				valid;
 	
+=======
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 	public RigidBody(Vector2 position, Vector2 velocity, double mass, double angle, double angularVelocity, double inertia, CollisionShape collisionShape)
 	{
 		this.position = position.clone();
 		this.velocity = velocity.clone();
+<<<<<<< HEAD
 //		this.acceleration = new Vector2();
 		this.mass = mass;
 		
 		this.momentum = velocity.clone().scale(Physics.LIGHT_SPEED * mass / Math.sqrt(Physics.LIGHT_SPEED_SQUARED - velocity.getMagnitudeSquared()));
 		
+=======
+		this.acceleration = new Vector2();
+		this.mass = mass;
+		
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		this.angle = angle;
 		this.angularVelocity = angularVelocity;
 		this.angularAcceleration = 0.0d;
@@ -58,10 +73,13 @@ public abstract class RigidBody
 		this.collisionShape = collisionShape;
 		
 		this.trail = null;
+<<<<<<< HEAD
 		
 		this.stationary = false;
 		
 		this.valid = true;
+=======
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 	}
 	
 	public RigidBody(CollisionShape collisionShape)
@@ -74,6 +92,7 @@ public abstract class RigidBody
 		return collisionShape;
 	}
 	
+<<<<<<< HEAD
 	public void setValid(boolean valid)
 	{
 		this.valid = valid;
@@ -89,6 +108,8 @@ public abstract class RigidBody
 		this.stationary = stationary;
 	}
 	
+=======
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 	public void attachTrail(Trail trail)
 	{
 		this.trail = trail;
@@ -177,9 +198,14 @@ public abstract class RigidBody
 		// The position of all objects has to be updated, before the velocity and forces are updated!
 		
 		// Calculate position
+<<<<<<< HEAD
 //		position.add(acceleration.clone().add(velocity).scale(deltaTime));
 //		velocity.add(acceleration);
 //		momentum.add(acceleration);
+=======
+		position.add(acceleration.clone().add(velocity).scale(deltaTime));
+		velocity.add(acceleration);
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		
 		// Same for rotation
 		angle += (angularAcceleration + angularVelocity) * deltaTime;
@@ -188,11 +214,16 @@ public abstract class RigidBody
 	
 	public void update(double deltaTime)
 	{
+<<<<<<< HEAD
 		if(!stationary)
 		{
 			updateLinear(deltaTime);
 			updateRotational(deltaTime);
 		}
+=======
+		updateLinear(deltaTime);
+		updateRotational(deltaTime);
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		
 		onUpdate(deltaTime);
 	}
@@ -208,6 +239,7 @@ public abstract class RigidBody
 	private void updateLinear(double deltaTime)
 	{
 		// Calculate new values for linear components using Verlet integration
+<<<<<<< HEAD
 //		acceleration.set(netForce).scale(inverseMass * deltaTime);
 //		velocity.add(acceleration);
 		this.momentum.add(netForce.scale(deltaTime));
@@ -215,6 +247,11 @@ public abstract class RigidBody
 		
 		this.velocity.set(momentum).scale(Physics.LIGHT_SPEED / Math.sqrt(Physics.LIGHT_SPEED_SQUARED * mass * mass + momentum.getMagnitudeSquared()));
 		this.position.add(velocity.clone().scale(deltaTime));
+=======
+		acceleration.set(netForce).scale(inverseMass * 0.5d * deltaTime);
+		velocity.add(acceleration);
+		netForce.zero();
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 	}
 	
 	private void updateRotational(double deltaTime)
@@ -257,8 +294,11 @@ public abstract class RigidBody
 	
 	public void setVelocity(Vector2 velocity)
 	{
+<<<<<<< HEAD
 		this.momentum.set(velocity).scale(Physics.LIGHT_SPEED * mass / Math.sqrt(Physics.LIGHT_SPEED_SQUARED - velocity.getMagnitudeSquared()));
 		
+=======
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		this.velocity.set(velocity);
 	}
 	

@@ -43,7 +43,11 @@ public class AddTool extends Tool
 		this.forceMultiplier = 1.0d;
 		this.dragging = false;
 		
+<<<<<<< HEAD
 		this.predictorPoints = new Vector2[200];
+=======
+		this.predictorPoints = new Vector2[400];
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		for(int i = 0; i < predictorPoints.length; ++i)
 		{
 			this.predictorPoints[i] = new Vector2();
@@ -94,8 +98,12 @@ public class AddTool extends Tool
 	{
 		// Calculate predictor
 		double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
+<<<<<<< HEAD
 		Vector2 velocity = Vector2.getPolar(-force * 100.0d, Vector2.getAngle(dragStartPosition, dragEndPosition));
 		velocity.set(velocity).scale(Physics.LIGHT_SPEED / Math.sqrt(Physics.LIGHT_SPEED_SQUARED * mass * mass + velocity.getMagnitudeSquared()));
+=======
+		Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		
 		// Add camera velocity, if tracking body
 		if(super.getSimulation().getModel().getCamera().getTrackedBody() != null)
@@ -110,8 +118,13 @@ public class AddTool extends Tool
 		Vector2 oldPos = new Vector2();
 		int pointIndex = 1;
 		Vector2 gravity;
+<<<<<<< HEAD
 		double deltaTime = super.getSimulation().getModel().getTimeScale() / (60.0d * super.getSimulation().getModel().getSimulationSteps());
 //		double deltaTime = 1.0d / (60.0d * 10.0d);
+=======
+//		double deltaTime = super.getSimulation().getModel().getTimeScale() / (60.0d * super.getSimulation().getModel().getSimulationSteps());
+		double deltaTime = 1.0d / (60.0d * 1.0d);
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		double time = 0.0d;
 		
 		while(pointIndex < predictorPoints.length)
@@ -130,7 +143,11 @@ public class AddTool extends Tool
 					s.applyForce(gravity);
 					
 					// check if inside the photon sphere, if so, there is no need to further calculate
+<<<<<<< HEAD
 					if(Vector2.getDistance(b.getPosition(), s.getPosition()) <= (2.0d * Physics.GRAVITATIONAL_CONSTANT * b.getMass() / Physics.LIGHT_SPEED_SQUARED))
+=======
+					if(Vector2.getDistance(b.getPosition(), s.getPosition()) <= (3.0d * Physics.GRAVITATIONAL_CONSTANT * b.getMass() / Physics.LIGHT_SPEED_SQUARED))
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 					{
 						for(int j = pointIndex; j < predictorPoints.length; ++j)
 						{
@@ -184,8 +201,12 @@ public class AddTool extends Tool
 		if(!spawnParticles)
 		{
 			double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
+<<<<<<< HEAD
 			Vector2 velocity = Vector2.getPolar(-force * 100.0d, Vector2.getAngle(dragStartPosition, dragEndPosition));
 			velocity.set(velocity).scale(Physics.LIGHT_SPEED / Math.sqrt(Physics.LIGHT_SPEED_SQUARED * mass * mass + velocity.getMagnitudeSquared()));
+=======
+			Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 			
 			// Add camera velocity, if tracking body
 			if(super.getSimulation().getModel().getCamera().getTrackedBody() != null)
@@ -194,8 +215,12 @@ public class AddTool extends Tool
 			}
 			
 			Star s = new Star(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition), velocity, mass, 0.0d, 0.0d, 1.0d, radius);
+<<<<<<< HEAD
 			s.attachTrail(new Trail(1000));
 			s.getTrail().setColor(Color.rgb((int)(Math.random() * 255.0d), (int)(Math.random() * 255.0d), (int)(Math.random() * 255.0d)));
+=======
+			s.attachTrail(new Trail(200));
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 			
 			super.getSimulation().addBody(s);
 		}
@@ -292,8 +317,12 @@ public class AddTool extends Tool
 				p.setPosition(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition));
 				
 				double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
+<<<<<<< HEAD
 				Vector2 velocity = Vector2.getPolar(-force * 100.0d, Vector2.getAngle(dragStartPosition, dragEndPosition));
 				velocity.set(velocity).scale(Physics.LIGHT_SPEED / Math.sqrt(Physics.LIGHT_SPEED_SQUARED * p.getMass() * p.getMass() + velocity.getMagnitudeSquared()));
+=======
+				Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
+>>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 				
 				p.setVelocity(velocity);
 				
