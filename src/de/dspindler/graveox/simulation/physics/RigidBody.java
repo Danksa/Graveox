@@ -9,8 +9,10 @@ public abstract class RigidBody
 	// Linear motion properties
 	protected Vector2			position;
 	protected Vector2			velocity;
-	private Vector2				acceleration;
+//	private Vector2				acceleration;
 	protected double			mass;
+	
+	private Vector2				momentum;
 	
 	// Rotational motion properties
 	protected double			angle;
@@ -30,12 +32,18 @@ public abstract class RigidBody
 	private Vector2				netForce;
 	private double				netTorque;
 	
+	private boolean				stationary;
+	
+	private boolean				valid;
+	
 	public RigidBody(Vector2 position, Vector2 velocity, double mass, double angle, double angularVelocity, double inertia, CollisionShape collisionShape)
 	{
 		this.position = position.clone();
 		this.velocity = velocity.clone();
-		this.acceleration = new Vector2();
+//		this.acceleration = new Vector2();
 		this.mass = mass;
+		
+		this.momentum = velocity.clone().scale(Physics.LIGHT_SPEED * mass / Math.sqrt(Physics.LIGHT_SPEED_SQUARED - velocity.getMagnitudeSquared()));
 		
 		this.angle = angle;
 		this.angularVelocity = angularVelocity;
@@ -50,6 +58,10 @@ public abstract class RigidBody
 		this.collisionShape = collisionShape;
 		
 		this.trail = null;
+		
+		this.stationary = false;
+		
+		this.valid = true;
 	}
 	
 	public RigidBody(CollisionShape collisionShape)
@@ -60,6 +72,21 @@ public abstract class RigidBody
 	public CollisionShape getCollisionShape()
 	{
 		return collisionShape;
+	}
+	
+	public void setValid(boolean valid)
+	{
+		this.valid = valid;
+	}
+	
+	public boolean isValid()
+	{
+		return valid;
+	}
+	
+	public void setStationary(boolean stationary)
+	{
+		this.stationary = stationary;
 	}
 	
 	public void attachTrail(Trail trail)
@@ -150,8 +177,9 @@ public abstract class RigidBody
 		// The position of all objects has to be updated, before the velocity and forces are updated!
 		
 		// Calculate position
-		position.add(acceleration.clone().add(velocity).scale(deltaTime));
-		velocity.add(acceleration);
+//		position.add(acceleration.clone().add(velocity).scale(deltaTime));
+//		velocity.add(acceleration);
+//		momentum.add(acceleration);
 		
 		// Same for rotation
 		angle += (angularAcceleration + angularVelocity) * deltaTime;
@@ -160,8 +188,11 @@ public abstract class RigidBody
 	
 	public void update(double deltaTime)
 	{
-		updateLinear(deltaTime);
-		updateRotational(deltaTime);
+		if(!stationary)
+		{
+			updateLinear(deltaTime);
+			updateRotational(deltaTime);
+		}
 		
 		onUpdate(deltaTime);
 	}
@@ -177,9 +208,13 @@ public abstract class RigidBody
 	private void updateLinear(double deltaTime)
 	{
 		// Calculate new values for linear components using Verlet integration
-		acceleration.set(netForce).scale(inverseMass * 0.5d * deltaTime);
-		velocity.add(acceleration);
-		netForce.zero();
+//		acceleration.set(netForce).scale(inverseMass * deltaTime);
+//		velocity.add(acceleration);
+		this.momentum.add(netForce.scale(deltaTime));
+		this.netForce.zero();
+		
+		this.velocity.set(momentum).scale(Physics.LIGHT_SPEED / Math.sqrt(Physics.LIGHT_SPEED_SQUARED * mass * mass + momentum.getMagnitudeSquared()));
+		this.position.add(velocity.clone().scale(deltaTime));
 	}
 	
 	private void updateRotational(double deltaTime)
@@ -222,6 +257,8 @@ public abstract class RigidBody
 	
 	public void setVelocity(Vector2 velocity)
 	{
+		this.momentum.set(velocity).scale(Physics.LIGHT_SPEED * mass / Math.sqrt(Physics.LIGHT_SPEED_SQUARED - velocity.getMagnitudeSquared()));
+		
 		this.velocity.set(velocity);
 	}
 	

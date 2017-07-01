@@ -7,6 +7,7 @@ public class Physics
 	public static final double			GRAVITATIONAL_CONSTANT = 1.0d;
 	public static final double			LIGHT_SPEED = 1000.0d;
 	public static final double			LIGHT_SPEED_SQUARED = LIGHT_SPEED * LIGHT_SPEED;
+	public static final double			REDUCED_PLANCK_CONSTANT = 1.054571800e-34d;
 	
 	public static void applyNewtonianGravity(RigidBody a, RigidBody b)
 	{
@@ -55,7 +56,7 @@ public class Physics
 		}
 		else
 		{
-			Vector2 force = getRelativisticGravity(a, b);
+			Vector2 force = getRelativisticGravity2(a, b);
 			
 			if(a instanceof Particle || b instanceof Particle)
 			{
@@ -83,7 +84,23 @@ public class Physics
 		Vector2 relPos = b.getPosition().clone().subtract(a.getPosition());
 		Vector2 relVel = b.getVelocity().clone().subtract(a.getVelocity());
 		
-		double mu = a.getMass() * b.getMass() / (a.getMass() + b.getMass());
+		double angVel = relPos.cross(relVel);
+		angVel *= angVel;
+		double dist2 = 1.0d / relPos.getMagnitudeSquared();
+		
+		double force = GRAVITATIONAL_CONSTANT * a.getMass() * b.getMass() * dist2 * (1.0d + 3.0d * angVel * dist2 / LIGHT_SPEED_SQUARED);
+		
+		relPos.scale(force * Math.sqrt(dist2));
+
+		return relPos;
+	}
+	
+	public static Vector2 getRelativisticGravity2(RigidBody a, RigidBody b)
+	{
+		Vector2 relPos = b.getPosition().clone().subtract(a.getPosition());
+		Vector2 relVel = b.getVelocity().clone().subtract(a.getVelocity());
+		
+		double mu = a.getMass();
 		double angVel = relPos.cross(relVel) * mu;
 		angVel *= angVel;
 		double dist2 = relPos.getMagnitudeSquared();

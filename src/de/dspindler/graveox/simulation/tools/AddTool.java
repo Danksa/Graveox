@@ -43,7 +43,7 @@ public class AddTool extends Tool
 		this.forceMultiplier = 1.0d;
 		this.dragging = false;
 		
-		this.predictorPoints = new Vector2[400];
+		this.predictorPoints = new Vector2[200];
 		for(int i = 0; i < predictorPoints.length; ++i)
 		{
 			this.predictorPoints[i] = new Vector2();
@@ -94,7 +94,8 @@ public class AddTool extends Tool
 	{
 		// Calculate predictor
 		double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
-		Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
+		Vector2 velocity = Vector2.getPolar(-force * 100.0d, Vector2.getAngle(dragStartPosition, dragEndPosition));
+		velocity.set(velocity).scale(Physics.LIGHT_SPEED / Math.sqrt(Physics.LIGHT_SPEED_SQUARED * mass * mass + velocity.getMagnitudeSquared()));
 		
 		// Add camera velocity, if tracking body
 		if(super.getSimulation().getModel().getCamera().getTrackedBody() != null)
@@ -109,8 +110,8 @@ public class AddTool extends Tool
 		Vector2 oldPos = new Vector2();
 		int pointIndex = 1;
 		Vector2 gravity;
-//		double deltaTime = super.getSimulation().getModel().getTimeScale() / (60.0d * super.getSimulation().getModel().getSimulationSteps());
-		double deltaTime = 1.0d / (60.0d * 1.0d);
+		double deltaTime = super.getSimulation().getModel().getTimeScale() / (60.0d * super.getSimulation().getModel().getSimulationSteps());
+//		double deltaTime = 1.0d / (60.0d * 10.0d);
 		double time = 0.0d;
 		
 		while(pointIndex < predictorPoints.length)
@@ -129,7 +130,7 @@ public class AddTool extends Tool
 					s.applyForce(gravity);
 					
 					// check if inside the photon sphere, if so, there is no need to further calculate
-					if(Vector2.getDistance(b.getPosition(), s.getPosition()) <= (3.0d * Physics.GRAVITATIONAL_CONSTANT * b.getMass() / Physics.LIGHT_SPEED_SQUARED))
+					if(Vector2.getDistance(b.getPosition(), s.getPosition()) <= (2.0d * Physics.GRAVITATIONAL_CONSTANT * b.getMass() / Physics.LIGHT_SPEED_SQUARED))
 					{
 						for(int j = pointIndex; j < predictorPoints.length; ++j)
 						{
@@ -183,7 +184,8 @@ public class AddTool extends Tool
 		if(!spawnParticles)
 		{
 			double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
-			Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
+			Vector2 velocity = Vector2.getPolar(-force * 100.0d, Vector2.getAngle(dragStartPosition, dragEndPosition));
+			velocity.set(velocity).scale(Physics.LIGHT_SPEED / Math.sqrt(Physics.LIGHT_SPEED_SQUARED * mass * mass + velocity.getMagnitudeSquared()));
 			
 			// Add camera velocity, if tracking body
 			if(super.getSimulation().getModel().getCamera().getTrackedBody() != null)
@@ -192,7 +194,8 @@ public class AddTool extends Tool
 			}
 			
 			Star s = new Star(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition), velocity, mass, 0.0d, 0.0d, 1.0d, radius);
-			s.attachTrail(new Trail(200));
+			s.attachTrail(new Trail(1000));
+			s.getTrail().setColor(Color.rgb((int)(Math.random() * 255.0d), (int)(Math.random() * 255.0d), (int)(Math.random() * 255.0d)));
 			
 			super.getSimulation().addBody(s);
 		}
@@ -289,7 +292,8 @@ public class AddTool extends Tool
 				p.setPosition(super.getSimulation().getModel().getCamera().toWorldSpace(dragStartPosition));
 				
 				double force = Vector2.getDistance(dragStartPosition, dragEndPosition) * forceMultiplier;
-				Vector2 velocity = Vector2.getPolar(-force, Vector2.getAngle(dragStartPosition, dragEndPosition));
+				Vector2 velocity = Vector2.getPolar(-force * 100.0d, Vector2.getAngle(dragStartPosition, dragEndPosition));
+				velocity.set(velocity).scale(Physics.LIGHT_SPEED / Math.sqrt(Physics.LIGHT_SPEED_SQUARED * p.getMass() * p.getMass() + velocity.getMagnitudeSquared()));
 				
 				p.setVelocity(velocity);
 				

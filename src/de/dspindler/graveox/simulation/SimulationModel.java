@@ -10,6 +10,9 @@ public class SimulationModel
 {
 	// Simulation components
 	private ArrayList<RigidBody>		bodies;
+	private ArrayList<RigidBody>		addBodies;
+	private ArrayList<RigidBody>		removeBodies;
+
 	private Camera						camera;
 	
 	private double						timeScale;
@@ -23,6 +26,9 @@ public class SimulationModel
 	public SimulationModel(Tool[] tools)
 	{
 		this.bodies = new ArrayList<RigidBody>();
+		this.addBodies = new ArrayList<RigidBody>();
+		this.removeBodies = new ArrayList<RigidBody>();
+		
 		this.camera = new Camera();
 		
 		this.timeScale = 1.0d;
@@ -63,14 +69,38 @@ public class SimulationModel
 		return time;
 	}
 	
+	public void addBodies()
+	{
+		RigidBody body;
+		for(int i = 0; i < addBodies.size(); ++i)
+		{
+			body = addBodies.remove(i);
+			body.setValid(true);
+			
+			this.bodies.add(body);
+		}
+	}
+	
 	public void addBody(RigidBody body)
 	{
-		this.bodies.add(body);
+		body.setValid(false);
+		
+		this.addBodies.add(body);
+	}
+	
+	public void removeBodies()
+	{
+		for(int i = 0; i < removeBodies.size(); ++i)
+		{
+			this.bodies.remove(removeBodies.remove(i));
+		}
 	}
 	
 	public void removeBody(RigidBody body)
 	{
-		this.bodies.remove(body);
+		body.setValid(false);
+		
+		this.removeBodies.add(body);
 	}
 	
 	public RigidBody getBody(int index)

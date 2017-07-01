@@ -15,11 +15,16 @@ public class Graveox extends Application
 			new AddTool()
 	};
 	
-	private SimulationPresenter				simulation;
+	private static SimulationPresenter		simulation;
 	
 	public static void main(String[] args)
 	{
 		Application.launch(args);
+	}
+	
+	public static SimulationPresenter getSimulation()
+	{
+		return simulation;
 	}
 
 	@Override

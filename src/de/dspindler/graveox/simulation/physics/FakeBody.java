@@ -6,11 +6,12 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class FakeBody extends RigidBody
 {
-	public FakeBody(Vector2 position, double mass)
+	public FakeBody(Vector2 position, Vector2 velocity, double mass)
 	{
 		super(new CircleCollisionShape(1.0d));
 		
 		super.setPosition(position);
+		super.setVelocity(velocity);
 		super.setMass(mass);
 	}
 

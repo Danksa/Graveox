@@ -2,6 +2,7 @@ package de.dspindler.graveox.simulation.physics.optimization;
 
 import de.dspindler.graveox.simulation.SimulationModel;
 import de.dspindler.graveox.simulation.physics.Particle;
+import de.dspindler.graveox.simulation.physics.Physics;
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import de.dspindler.graveox.util.Vector2;
 import javafx.scene.canvas.GraphicsContext;
@@ -65,9 +66,27 @@ public class GravityHandler
 		this.root.updateBodies(model.getBodies());
 		
 		// Apply gravity
-		for(RigidBody b : model.getBodies())
+//		for(RigidBody b : model.getBodies())
+//		{
+//			b.applyForce(root.getForce(b));
+//		}
+		
+		for(RigidBody a : model.getBodies())
 		{
-			b.applyForce(root.getForce(b));
+			if(a.isValid())
+			{
+				for(RigidBody b : model.getBodies())
+				{
+					if(b.isValid())
+					{
+						if(a != b && !(a instanceof Particle && b instanceof Particle))
+						{
+							a.applyForce(Physics.getRelativisticGravity(a, b));
+//							a.applyForce(Physics.getNewtonianGravity(a, b));
+						}
+					}
+				}
+			}
 		}
 	}
 	

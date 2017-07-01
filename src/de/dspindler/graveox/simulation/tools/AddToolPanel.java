@@ -43,7 +43,7 @@ public class AddToolPanel extends ToolPanel
 		this.propertyAnchor.getChildren().add(propertyMassLabel);
 		
 		// Property mass field
-		this.propertyMassField = new ValueField(false);
+		this.propertyMassField = new ValueField(false, ValueField.UnitType.MASS);
 		this.propertyMassField.setLayoutX(50.0d);
 		this.propertyMassField.setLayoutY(10.0d);
 		this.propertyMassField.setPrefWidth(170.0d);
@@ -56,7 +56,7 @@ public class AddToolPanel extends ToolPanel
 		this.propertyAnchor.getChildren().add(propertyDensityLabel);
 		
 		// Property density field
-		this.propertyDensityField = new ValueField(false);
+		this.propertyDensityField = new ValueField(false, ValueField.UnitType.DENSITY);
 		this.propertyDensityField.setLayoutX(50.0d);
 		this.propertyDensityField.setLayoutY(40.0d);
 		this.propertyDensityField.setPrefWidth(170.0d);
