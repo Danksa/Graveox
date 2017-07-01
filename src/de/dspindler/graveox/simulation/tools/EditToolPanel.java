@@ -2,10 +2,7 @@ package de.dspindler.graveox.simulation.tools;
 
 import java.text.DecimalFormat;
 
-<<<<<<< HEAD
 import de.dspindler.graveox.simulation.physics.Physics;
-=======
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 import de.dspindler.graveox.simulation.physics.RigidBody;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -68,19 +65,12 @@ public class EditToolPanel extends ToolPanel
 		this.infoPane.setText("Body Information");
 		
 		// Info items
-<<<<<<< HEAD
 		this.infoItems = new ListItem[5];
-=======
-		this.infoItems = new ListItem[4];
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		this.infoItems[0] = new ListItem("Mass", "");
 		this.infoItems[1] = new ListItem("Inertia", "");
 		this.infoItems[2] = new ListItem("Position", "");
 		this.infoItems[3] = new ListItem("Velocity", "");
-<<<<<<< HEAD
 		this.infoItems[4] = new ListItem("Speed", "");
-=======
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		
 		// Initialize info list and add above items
 		this.infoList = new ListView<ListItem>();
@@ -177,10 +167,7 @@ public class EditToolPanel extends ToolPanel
 		this.infoItems[1].setValue(valueFormat.format(b.getInertia()).replace("E", "x10^"));
 		this.infoItems[2].setValue(b.getPosition().toString());
 		this.infoItems[3].setValue(b.getVelocity().toString());
-<<<<<<< HEAD
 		this.infoItems[4].setValue(String.format("%.4f \t %.4f c", b.getVelocity().getMagnitude(), b.getVelocity().getMagnitude() / Physics.LIGHT_SPEED));
-=======
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		
 		// Disable or enable all trail menus accordingly
 		this.trailColorPicker.setDisable(!trailEnableBox.isSelected());

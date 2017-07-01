@@ -12,18 +12,11 @@ import javafx.scene.paint.Color;
 
 public class TreeNode
 {
-<<<<<<< HEAD
 	private static final double		THETA = 0.5d;
 	
 	private Vector2					massCenter;
 	private double					massSum;
 	private Vector2					avgVelocity;
-=======
-	private static final double		THETA = 0.8d;
-	
-	private Vector2					massCenter;
-	private double					massSum;
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 	
 	private Vector2					position;
 	private Vector2					size;
@@ -44,11 +37,7 @@ public class TreeNode
 		this.size = size.clone();
 		this.center = size.clone().scale(0.5d).add(position);
 		
-<<<<<<< HEAD
 		this.fakeBody = new FakeBody(new Vector2(), new Vector2(), 1.0d);
-=======
-		this.fakeBody = new FakeBody(new Vector2(), 1.0d);
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 //		System.out.println("Size: " + size);
 		
 		this.bodies = new ArrayList<RigidBody>();
@@ -56,10 +45,7 @@ public class TreeNode
 		
 		this.massCenter = new Vector2();
 		this.massSum = 0.0d;
-<<<<<<< HEAD
 		this.avgVelocity = new Vector2();
-=======
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		
 		this.topLeft = null;
 		this.topRight = null;
@@ -170,15 +156,9 @@ public class TreeNode
 	
 	private boolean isInside(RigidBody b)
 	{
-<<<<<<< HEAD
 		if(b.getPosition().x >= position.x && b.getPosition().x < position.x + size.x)
 		{
 			if(b.getPosition().y >= position.y && b.getPosition().y < position.y + size.y)
-=======
-		if(b.getPosition().x >= position.x && b.getPosition().x <= position.x + size.x)
-		{
-			if(b.getPosition().y >= position.y && b.getPosition().y <= position.y + size.y)
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 			{
 				return true;
 			}
@@ -204,10 +184,7 @@ public class TreeNode
 			}
 		}
 		
-<<<<<<< HEAD
 		this.avgVelocity.zero();
-=======
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		this.massSum = 0.0d;
 		this.massCenter.zero();
 		for(RigidBody b : this.bodies)
@@ -216,7 +193,6 @@ public class TreeNode
 			{
 				this.massSum += b.getMass();
 				this.massCenter.add(b.getPosition().clone().scale(b.getMass()));
-<<<<<<< HEAD
 				this.avgVelocity.add(b.getVelocity());
 			}
 		}
@@ -226,14 +202,6 @@ public class TreeNode
 		this.fakeBody.setMass(massSum);
 		this.fakeBody.setPosition(massCenter);
 		this.fakeBody.setVelocity(avgVelocity);
-=======
-			}
-		}
-		this.massCenter.scale(1.0d / massSum);
-		
-		this.fakeBody.setMass(massSum);
-		this.fakeBody.setPosition(massCenter);
->>>>>>> ecb846ef15b803224d64c3847fd3f83385893ab7
 		
 		if(this.bodies.size() > 1)
 		{
